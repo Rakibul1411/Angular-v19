@@ -1,0 +1,87 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient bg-primary text-white text-center py-3">
+          <h2 class="mb-0">{{ title }}</h2>
+        </div>
+        <div class="card-body p-5">
+          
+          <!-- Property Binding Section -->
+          <div class="mb-5">
+            <h4 class="text-primary mb-3">Property Binding</h4>
+            <p class="text-muted mb-3">Data flows from component to template (one-way binding)</p>
+            
+            <div class="row align-items-center mb-3">
+              <div class="col-md-6">
+                <div class="badge bg-dark fs-5 p-3 mb-3 d-block text-center">Count: {{ count1 }}</div>
+                <label class="form-label">Property Bound Input (readonly):</label>
+                <input type="text" [value]="count1" class="form-control" readonly title="Property bound value" placeholder="Property bound value">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Interpolation Display:</label>
+                <h3 class="text-center bg-light p-3 rounded">{{ count1 }}</h3>
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-center gap-2">
+              <button class="btn btn-outline-danger btn-lg" (click)="propertyDecrement()" [disabled]="count1 <= 0">
+                <i class="fas fa-minus"></i> Decrement
+              </button>
+              <button class="btn btn-outline-success btn-lg" (click)="propertyIncrement()">
+                <i class="fas fa-plus"></i> Increment
+              </button>
+              <button class="btn btn-outline-warning btn-lg" (click)="propertyReset()">
+                <i class="fas fa-refresh"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Event Binding Section -->
+          <div class="mb-5">
+            <h4 class="text-success mb-3">Event Binding</h4>
+            <p class="text-muted mb-3">Data flows from template to component when events occur</p>
+            
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <label class="form-label">Type in this input (uses event binding):</label>
+                <input type="text" (input)="eventChange($event)" 
+                       placeholder="Type something to see event binding in action..." 
+                       class="form-control form-control-lg">
+                <small class="text-muted">Event: (input)="eventChange($event)"</small>
+              </div>
+              <div class="col-md-4 mt-3 mt-md-0">
+                <label class="form-label">Live Output:</label>
+                <div class="alert alert-success mb-0 text-center">
+                  <strong>{{ count2 || 'Type something...' }}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Two-way Binding Section -->
+          <div class="mb-3">
+            <h4 class="text-warning mb-3">Two-way Binding</h4>
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <input type="text" [(ngModel)]="count3" 
+                       class="form-control form-control-lg"
+                       placeholder="Edit this value">
+              </div>
+              <div class="col-md-4 mt-3 mt-md-0">
+                <div class="alert alert-success mb-0">
+                  <strong>Value:</strong> {{ count3 }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

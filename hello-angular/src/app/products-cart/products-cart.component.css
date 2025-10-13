@@ -1,0 +1,31 @@
+.quantity-input {
+  width: 80px;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.table th {
+  border-top: none;
+}
+
+.alert {
+  border-radius: 8px;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.form-control {
+  border-radius: 6px;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.text-primary {
+  font-weight: 600;
+}

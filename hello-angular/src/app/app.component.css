@@ -1,0 +1,4 @@
+/* Minimal custom styles - mainly using Bootstrap classes */
+.main-content {
+  min-height: calc(100vh - 56px);
+}

@@ -1,0 +1,59 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-success text-white text-center py-3">
+          <h2 class="mb-0">
+            <i class="bi bi-person-circle"></i> Hello Child Component
+          </h2>
+        </div>
+        <div class="card-body p-5 text-center">
+          <h3 class="text-success mb-4">{{ message }}</h3>
+          
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Component Information:</strong> This is a standalone Angular component that demonstrates basic component structure.
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <div class="card border-success">
+                <div class="card-body">
+                  <h5 class="card-title text-success">
+                    <i class="bi bi-check-circle"></i> Features
+                  </h5>
+                  <ul class="list-unstyled text-start">
+                    <li><i class="bi bi-arrow-right text-success me-2"></i>Standalone component</li>
+                    <li><i class="bi bi-arrow-right text-success me-2"></i>TypeScript support</li>
+                    <li><i class="bi bi-arrow-right text-success me-2"></i>Bootstrap styling</li>
+                    <li><i class="bi bi-arrow-right text-success me-2"></i>Responsive design</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card border-info">
+                <div class="card-body">
+                  <h5 class="card-title text-info">
+                    <i class="bi bi-gear"></i> Component Structure
+                  </h5>
+                  <ul class="list-unstyled text-start">
+                    <li><i class="bi bi-file-earmark-code text-info me-2"></i>hello-child.component.ts</li>
+                    <li><i class="bi bi-file-earmark-text text-info me-2"></i>hello-child.component.html</li>
+                    <li><i class="bi bi-palette text-info me-2"></i>hello-child.component.css</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <button class="btn btn-success btn-lg" onclick="alert('Hello from Child Component!')">
+              <i class="bi bi-hand-thumbs-up me-2"></i>Click Me!
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

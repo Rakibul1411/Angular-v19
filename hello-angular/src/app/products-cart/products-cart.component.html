@@ -1,0 +1,180 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-cart-plus"></i> Select Products
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="productSelect" class="form-label">Choose Product:</label>
+            <select 
+              id="productSelect"
+              class="form-select" 
+              [(ngModel)]="selectedProductId" 
+              (change)="onProductSelect()">
+              <option value="">-- Select a Product --</option>
+              <option *ngFor="let product of products" [value]="product.id">
+                {{ product.name }}
+              </option>
+            </select>
+          </div>
+
+          <div *ngIf="selectedProduct" class="alert alert-info">
+            <h6><i class="bi bi-info-circle"></i> Product Details</h6>
+            <p class="mb-1"><strong>Name:</strong> {{ selectedProduct.name }}</p>
+            <p class="mb-1"><strong>Unit Price:</strong> ${{ selectedProduct.unitPrice | number:'1.2-2' }}</p>
+            <p class="mb-0"><strong>Available:</strong> {{ selectedProduct.availableQuantity }} units</p>
+          </div>
+
+          <div *ngIf="selectedProduct" class="mb-3">
+            <label for="quantity" class="form-label">Quantity:</label>
+            <input 
+              type="number" 
+              id="quantity"
+              class="form-control" 
+              [(ngModel)]="selectedQuantity" 
+              min="1" 
+              [max]="selectedProduct.availableQuantity">
+          </div>
+
+          <div *ngIf="selectedProduct" class="d-grid">
+            <button 
+              class="btn btn-success btn-lg" 
+              (click)="addToCart()"
+              [disabled]="!selectedProduct || selectedQuantity <= 0">
+              <i class="bi bi-cart-plus"></i> Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-cart-check"></i> Shopping Cart ({{ cartItems.length }} items)
+          </h5>
+          <button 
+            class="btn btn-outline-light btn-sm" 
+            (click)="clearCart()"
+            [disabled]="cartItems.length === 0">
+            <i class="bi bi-trash"></i> Clear Cart
+          </button>
+        </div>
+        <div class="card-body">
+          
+          <div *ngIf="cartItems.length > 0; else emptyCart" class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>SL No</th>
+                  <th>Product Name</th>
+                  <th>Unit Price</th>
+                  <th>Quantity</th>
+                  <th>Total Price</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of cartItems; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ item.name }}</td>
+                  <td>${{ item.unitPrice | number:'1.2-2' }}</td>
+                  <td>
+                    <input 
+                      type="number" 
+                      class="form-control form-control-sm quantity-input" 
+                      [(ngModel)]="item.quantity" 
+                      (input)="updateQuantity(i)"
+                      min="1"
+                      [title]="'Quantity for ' + item.name"
+                      [placeholder]="item.quantity.toString()">
+                  </td>
+                  <td class="fw-bold text-success">${{ item.totalPrice | number:'1.2-2' }}</td>
+                  <td>
+                    <button 
+                      class="btn btn-outline-danger btn-sm" 
+                      (click)="removeFromCart(i)"
+                      [title]="'Remove ' + item.name + ' from cart'">
+                      <i class="bi bi-trash"></i> Remove
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="row mt-4">
+              <div class="col-md-6 offset-md-6">
+                <div class="card border-info">
+                  <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-calculator"></i> Order Summary</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row mb-2">
+                      <div class="col-6">
+                        <strong>Grand Total:</strong>
+                      </div>
+                      <div class="col-6 text-end">
+                        <strong>${{ grandTotal | number:'1.2-2' }}</strong>
+                      </div>
+                    </div>
+
+                    <div class="row mb-2">
+                      <div class="col-6">
+                        <label for="discount" class="form-label">Discount (%):</label>
+                      </div>
+                      <div class="col-6">
+                        <input 
+                          type="number" 
+                          id="discount"
+                          class="form-control form-control-sm" 
+                          [(ngModel)]="discountPercentage" 
+                          (input)="onDiscountChange()"
+                          min="0" 
+                          max="100"
+                          placeholder="0">
+                      </div>
+                    </div>
+
+                    <div class="row mb-2 text-danger">
+                      <div class="col-6">
+                        Discount Amount:
+                      </div>
+                      <div class="col-6 text-end">
+                        -${{ discountAmount | number:'1.2-2' }}
+                      </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                      <div class="col-6">
+                        <h5 class="text-primary">Final Price:</h5>
+                      </div>
+                      <div class="col-6 text-end">
+                        <h5 class="text-primary">${{ finalPrice | number:'1.2-2' }}</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #emptyCart>
+            <div class="text-center py-5">
+              <i class="bi bi-cart-x display-1 text-muted"></i>
+              <h4 class="text-muted mt-3">Your cart is empty</h4>
+              <p class="text-muted">Select products from the left panel to add them to your cart.</p>
+            </div>
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
