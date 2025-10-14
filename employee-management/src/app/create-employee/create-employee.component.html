@@ -1,0 +1,32 @@
+<div class="container mx-auto p-6 max-w-md">
+  <h2 class="text-xl font-semibold mb-4">Create Employee</h2>
+
+  <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">Employee Name</label>
+      <input
+        [(ngModel)]="employeeName"
+        name="employeeName"
+        required
+        class="border px-3 py-2 rounded w-full"
+        placeholder="Enter employee name"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Employee Role</label>
+      <input
+        [(ngModel)]="employeeRole"
+        name="employeeRole"
+        required
+        class="border px-3 py-2 rounded w-full"
+        placeholder="Enter employee role"
+      />
+    </div>
+
+    <div class="flex gap-2">
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+      <button type="button" (click)="cancel()" class="px-4 py-2 rounded border">Cancel</button>
+    </div>
+  </form>
+</div>
