@@ -7,11 +7,13 @@ import { AssignedTask } from '../models/assignedTask.model';
 import { EmployeeService } from '../services/employee.service';
 import { TaskService } from '../services/task.service';
 import { AssignedTaskService } from '../services/assignedTask.service';
+import { AvailableTasksComponent } from '../available-tasks/available-tasks.component';
+import { AssignedTasksTableComponent } from '../assigned-tasks-table/assigned-tasks-table.component';
 
 @Component({
   selector: 'app-assigned-task',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AvailableTasksComponent, AssignedTasksTableComponent],
   templateUrl: './assigned-task.component.html',
   styleUrls: ['./assigned-task.component.css']
 })
@@ -97,6 +99,21 @@ export class AssignedTaskComponent implements OnInit {
     } else {
       this.selectedTasks = this.selectedTasks.filter(id => id !== taskId);
     }
+  }
+
+  // Event handler for child component task selection
+  onTaskSelectionChange(event: {taskId: number, isChecked: boolean}): void {
+    this.onTaskCheckboxChange(event.taskId, event.isChecked);
+  }
+
+  // Event handler for child component update assignment
+  onUpdateAssignmentFromChild(assignment: AssignedTask): void {
+    this.updateAssignment(assignment);
+  }
+
+  // Event handler for child component delete assignment
+  onDeleteAssignmentFromChild(assignmentId: number): void {
+    this.deleteAssignment(assignmentId);
   }
 
   isTaskSelected(taskId: number): boolean {
