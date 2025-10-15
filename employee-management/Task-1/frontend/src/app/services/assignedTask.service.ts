@@ -5,6 +5,7 @@ import { Task } from '../models/task.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AssignedTaskService {
   private assignedTasks: AssignedTask[] = [];
 
