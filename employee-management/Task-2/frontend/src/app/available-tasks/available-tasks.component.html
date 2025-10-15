@@ -48,3 +48,22 @@
     <p class="text-gray-400 text-sm mt-2">Create some tasks first to assign them</p>
   </div>
 </div>
+
+<!-- Action buttons section -->
+<div class="mt-6 flex justify-end gap-2">
+  <button
+    *ngIf="isEditMode"
+    (click)="onCancelEdit()"
+    class="px-6 py-2 rounded-lg font-medium bg-gray-500 hover:bg-gray-600 text-white transition duration-200">
+    Cancel
+  </button>
+  <button
+    (click)="onAssignTasks()"
+    [disabled]="!selectedEmployeeId || selectedTasks.length === 0"
+    [class]="selectedEmployeeId && selectedTasks.length > 0
+      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+      : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+    class="px-6 py-2 rounded-lg font-medium transition duration-200">
+    {{ isEditMode ? 'Update Assignment' : 'Assign Tasks' }}
+  </button>
+</div>

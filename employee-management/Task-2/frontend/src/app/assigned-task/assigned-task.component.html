@@ -8,6 +8,7 @@
     </p>
   </div>
 
+  <!-- Employee Dropdown Section -->
   <div class="mb-6">
     <label class="block text-sm font-medium mb-2">Select Employee</label>
     <div class="relative inline-block w-64">
@@ -43,33 +44,18 @@
     [tasks]="tasks"
     [selectedEmployeeId]="selectedEmployeeId"
     [selectedTasks]="selectedTasks"
-    (taskSelectionChange)="onTaskSelectionChange($event)">
+    [isEditMode]="isEditMode"
+    (taskSelectionChange)="onTaskSelectionChange($event)"
+    (assignTasks)="onAssignTasks($event)"
+    (cancelEdit)="onCancelEdit()">
   </app-available-tasks>
-
-  <div class="mt-6 flex justify-end gap-2">
-    <button
-      *ngIf="isEditMode"
-      (click)="cancelEdit()"
-      class="px-6 py-2 rounded-lg font-medium bg-gray-500 hover:bg-gray-600 text-white transition duration-200">
-      Cancel
-    </button>
-    <button
-      (click)="assignTasks()"
-      [disabled]="!selectedEmployeeId || selectedTasks.length === 0"
-      [class]="selectedEmployeeId && selectedTasks.length > 0
-        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-        : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
-      class="px-6 py-2 rounded-lg font-medium transition duration-200">
-      {{ isEditMode ? 'Update Assignment' : 'Assign Tasks' }}
-    </button>
-  </div>
 
   <!-- Assigned Tasks Table Child Component -->
   <app-assigned-tasks-table
     [assignedTasks]="assignedTasks"
     [isEditMode]="isEditMode"
     [editingAssignmentId]="editingAssignmentId"
-    (updateAssignment)="onUpdateAssignmentFromChild($event)"
-    (deleteAssignment)="onDeleteAssignmentFromChild($event)">
+    (updateAssignment)="onUpdateAssignment($event)"
+    (deleteAssignment)="onDeleteAssignment($event)">
   </app-assigned-tasks-table>
 </div>

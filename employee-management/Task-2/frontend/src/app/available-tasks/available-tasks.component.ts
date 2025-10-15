@@ -14,8 +14,11 @@ export class AvailableTasksComponent {
   @Input() tasks: Task[] = [];
   @Input() selectedEmployeeId: number | null = null;
   @Input() selectedTasks: number[] = [];
+  @Input() isEditMode = false;
 
   @Output() taskSelectionChange = new EventEmitter<{taskId: number, isChecked: boolean}>();
+  @Output() assignTasks = new EventEmitter<number[]>();
+  @Output() cancelEdit = new EventEmitter<void>();
 
   onTaskCheckboxChange(taskId: number, isChecked: boolean): void {
     this.taskSelectionChange.emit({ taskId, isChecked });
@@ -23,5 +26,13 @@ export class AvailableTasksComponent {
 
   isTaskSelected(taskId: number): boolean {
     return this.selectedTasks.includes(taskId);
+  }
+
+  onAssignTasks(): void {
+    this.assignTasks.emit(this.selectedTasks);
+  }
+
+  onCancelEdit(): void {
+    this.cancelEdit.emit();
   }
 }
