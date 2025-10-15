@@ -1,9 +1,4 @@
 import { Routes } from '@angular/router';
-import { EmployeesComponent } from './employees/employees.component';
-import { TasksComponent } from './tasks/tasks.component';
-import { CreateEmployeeComponent } from './create-employee/create-employee.component';
-import { CreateTaskComponent } from './create-task/create-task.component';
-import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 
 export const routes: Routes = [
   { 
