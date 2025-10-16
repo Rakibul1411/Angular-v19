@@ -79,7 +79,6 @@ export class AssignedTaskComponent implements OnInit {
   }
 
   loadExistingAssignmentsForEmployee(employeeId: number): void {
-    // Find if this employee already has assignments
     const existingAssignment = this.assignedTasks.find(assignment => assignment.employeeId === employeeId);
 
     if (existingAssignment) {

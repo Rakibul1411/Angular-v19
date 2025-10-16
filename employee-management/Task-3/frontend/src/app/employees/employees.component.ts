@@ -21,7 +21,7 @@ export class EmployeesComponent implements OnInit {
   showDeleteModal: boolean = false;
   employeeToDelete!: Employee;
 
-  constructor ( 
+  constructor (
     private employeeService: EmployeeService,
     private router: Router
   ) { }
@@ -29,7 +29,7 @@ export class EmployeesComponent implements OnInit {
   ngOnInit(): void {
     this.loadEmployees();
   }
-  
+
   loadEmployees(): void {
     this.employees = this.employeeService.getEmployees();
   }

@@ -1,0 +1,56 @@
+{
+  "employees": [
+    {
+      "id": "2",
+      "employeeName": "Rony",
+      "employeeRole": "Designer"
+    },
+    {
+      "id": "3",
+      "employeeName": "Saif",
+      "employeeRole": "HR"
+    },
+    {
+      "id": "41fb",
+      "employeeName": "gggfgerfr",
+      "employeeRole": "ggg"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "taskName": "Learn Angular-19",
+      "taskCode": "TA001"
+    },
+    {
+      "id": "2",
+      "taskName": "Develop API",
+      "taskCode": "TA002"
+    },
+    {
+      "id": "3",
+      "taskName": "Implement Decorator",
+      "taskCode": "TA003"
+    }
+  ],
+  "assigned-tasks": [
+    {
+      "id": "1",
+      "employeeId": 1,
+      "employeeName": "Rakibul",
+      "taskName": "Learn Angular-19, Develop API"
+    },
+    {
+      "id": "2",
+      "employeeId": 2,
+      "employeeName": "Rony",
+      "taskName": "Develop API"
+    },
+    {
+      "id": "3",
+      "employeeId": 3,
+      "employeeName": "Saif",
+      "taskName": "Implement Decorator"
+    }
+  ]
+}

@@ -7,11 +7,13 @@ import { AssignedTask } from '../models/assignedTask.model';
 import { EmployeeService } from '../services/employee.service';
 import { TaskService } from '../services/task.service';
 import { AssignedTaskService } from '../services/assignedTask.service';
+import { AvailableTasksComponent } from '../available-tasks/available-tasks.component';
+import { AssignedTasksTableComponent } from '../assigned-tasks-table/assigned-tasks-table.component';
 
 @Component({
   selector: 'app-assigned-task',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AvailableTasksComponent, AssignedTasksTableComponent],
   templateUrl: './assigned-task.component.html',
   styleUrls: ['./assigned-task.component.css']
 })
@@ -77,7 +79,6 @@ export class AssignedTaskComponent implements OnInit {
   }
 
   loadExistingAssignmentsForEmployee(employeeId: number): void {
-    // Find if this employee already has assignments
     const existingAssignment = this.assignedTasks.find(assignment => assignment.employeeId === employeeId);
 
     if (existingAssignment) {
@@ -85,37 +86,34 @@ export class AssignedTaskComponent implements OnInit {
     }
   }
 
-  onTaskCheckboxChange(taskId: number, isChecked: boolean): void {
+  // Event handlers for child component communications
+  onTaskSelectionChange(event: {taskId: number, isChecked: boolean}): void {
     if (!this.selectedEmployeeId) {
       return;
     }
 
-    if (isChecked) {
-      if (!this.selectedTasks.includes(taskId)) {
-        this.selectedTasks.push(taskId);
+    if (event.isChecked) {
+      if (!this.selectedTasks.includes(event.taskId)) {
+        this.selectedTasks.push(event.taskId);
       }
     } else {
-      this.selectedTasks = this.selectedTasks.filter(id => id !== taskId);
+      this.selectedTasks = this.selectedTasks.filter(id => id !== event.taskId);
     }
   }
 
-  isTaskSelected(taskId: number): boolean {
-    return this.selectedTasks.includes(taskId);
-  }
-
-  assignTasks(): void {
+  onAssignTasks(selectedTasks: number[]): void {
     if (!this.selectedEmployeeId) {
       alert('Please select an employee first!');
       return;
     }
 
-    if (this.selectedTasks.length === 0) {
+    if (selectedTasks.length === 0) {
       alert('Please select at least one task!');
       return;
     }
 
     const employee = this.employees.find(emp => emp.id === this.selectedEmployeeId);
-    const selectedTaskObjects = this.tasks.filter(task => this.selectedTasks.includes(task.id));
+    const selectedTaskObjects = this.tasks.filter(task => selectedTasks.includes(task.id));
 
     // Check if this employee already has an existing assignment
     const existingAssignment = this.assignedTasks.find(assignment => assignment.employeeId === this.selectedEmployeeId);
@@ -132,20 +130,7 @@ export class AssignedTaskComponent implements OnInit {
     this.loadAssignedTasks();
   }
 
-  clearAllState(): void {
-    this.isEditMode = false;
-    this.editingAssignmentId = null;
-    this.selectedEmployeeId = null;
-    this.selectedTasks = [];
-    this.showDropdown = false;
-  }
-
-  getAssignedTasksString(assignedTasks: Task[]): string {
-    console.log(this.selectedTasks);
-    return this.assignedTaskService.getAssignedTasksString(assignedTasks);
-  }
-
-  updateAssignment(assignment: AssignedTask): void {
+  onUpdateAssignment(assignment: AssignedTask): void {
     this.selectedEmployeeId = assignment.employeeId;
     this.selectedTasks = assignment.assignedTasks.map(task => task.id);
     this.isEditMode = true;
@@ -154,25 +139,33 @@ export class AssignedTaskComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  deleteAssignment(assignmentId: number): void {
+  onDeleteAssignment(assignmentId: number): void {
     const assignment = this.assignedTaskService.getAssignmentById(assignmentId);
     if (assignment && confirm(`Are you sure you want to delete the assignment for ${assignment.employeeName}?`)) {
       const success = this.assignedTaskService.deleteAssignment(assignmentId);
       if (success) {
         if (this.editingAssignmentId === assignmentId) {
-          this.cancelEdit();
+          this.onCancelEdit();
         }
 
         this.selectedEmployeeId = null;
         this.selectedTasks = [];
-        this.loadAssignedTasks(); // Refresh the list
+        this.loadAssignedTasks();
       } else {
         alert('Failed to delete assignment!');
       }
     }
   }
 
-  cancelEdit(): void {
+  onCancelEdit(): void {
     this.clearAllState();
+  }
+
+  clearAllState(): void {
+    this.isEditMode = false;
+    this.editingAssignmentId = null;
+    this.selectedEmployeeId = null;
+    this.selectedTasks = [];
+    this.showDropdown = false;
   }
 }
