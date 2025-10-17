@@ -1,0 +1,46 @@
+<nav class="bg-gray-400 text-black py-2 flex flex-col md:flex-row md:justify-between md:items-center md:px-6 gap-2">
+  <div class="flex flex-col md:flex-row md:items-center md:gap-6 gap-2">
+    <a
+      *ngIf="isAuthenticated"
+      routerLink="/employees"
+      routerLinkActive="font-bold underline"
+      class="hover:underline"
+    >
+      Employees
+    </a>
+    <a
+      *ngIf="isAuthenticated"
+      routerLink="/tasks"
+      routerLinkActive="font-bold underline"
+      class="hover:underline"
+    >
+      Tasks
+    </a>
+    <a
+      *ngIf="isAuthenticated"
+      routerLink="/assigned-tasks"
+      routerLinkActive="font-bold underline"
+      class="hover:underline"
+    >
+      Assigned Tasks
+    </a>
+    <a
+      *ngIf="isAuthenticated"
+      routerLink="/app-api-call"
+      routerLinkActive="font-bold underline"
+      class="hover:underline"
+    >
+      API Call
+    </a>
+  </div>
+
+  <div class="flex items-center gap-4" *ngIf="isAuthenticated">
+    <span class="text-sm">Welcome, {{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+    <button
+      (click)="onLogout()"
+      class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm transition-colors"
+    >
+      Logout
+    </button>
+  </div>
+</nav>

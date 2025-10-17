@@ -1,0 +1,36 @@
+/* Dropdown arrow rotation animation */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Custom checkbox styling */
+input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* Smooth transitions */
+.transition-transform {
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Hover effects for dropdown items */
+.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6;
+}
+
+/* Edit mode highlighting */
+.bg-yellow-50 {
+  background-color: #fefce8;
+}
+
+/* Long text handling */
+.max-w-xs {
+  max-width: 20rem;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

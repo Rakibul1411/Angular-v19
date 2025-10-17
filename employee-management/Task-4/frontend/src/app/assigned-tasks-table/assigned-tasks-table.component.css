@@ -1,0 +1,20 @@
+/* Assigned Tasks Table Component Styles */
+.assignment-row {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.assignment-row:hover {
+  background-color: #f8fafc;
+}
+
+.editing-row {
+  background-color: #fefce8;
+}
+
+.action-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}

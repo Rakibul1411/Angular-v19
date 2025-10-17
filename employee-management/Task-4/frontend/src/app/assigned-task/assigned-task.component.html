@@ -1,0 +1,61 @@
+<div class="container mx-auto p-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-semibold">
+      {{ isEditMode ? 'Update Assignment' : 'Assign Tasks' }}
+    </h1>
+    <p class="text-gray-600">
+      {{ isEditMode ? 'Modify the employee task assignment' : 'Select an employee and assign tasks' }}
+    </p>
+  </div>
+
+  <!-- Employee Dropdown Section -->
+  <div class="mb-6">
+    <label class="block text-sm font-medium mb-2">Select Employee</label>
+    <div class="relative inline-block w-64">
+      <button
+        (click)="toggleDropdown()"
+        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 text-left flex justify-between items-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <span>{{ getSelectedEmployeeName() }}</span>
+        <svg class="w-4 h-4 ml-2 transition-transform"
+             [class.rotate-180]="showDropdown"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <div *ngIf="showDropdown"
+           class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+        <div *ngFor="let employee of employees"
+             (click)="selectEmployee(employee)"
+             class="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0">
+          <div class="font-medium">{{ employee.employeeName }}</div>
+          <div class="text-sm text-gray-500">{{ employee.employeeRole }}</div>
+        </div>
+        <div *ngIf="employees.length === 0"
+             class="px-4 py-2 text-gray-500 text-center">
+          No employees available
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Tasks Child Component -->
+  <app-available-tasks
+    [tasks]="tasks"
+    [selectedEmployeeId]="selectedEmployeeId"
+    [selectedTasks]="selectedTasks"
+    [isEditMode]="isEditMode"
+    (taskSelectionChange)="onTaskSelectionChange($event)"
+    (assignTasks)="onAssignTasks($event)"
+    (cancelEdit)="onCancelEdit()">
+  </app-available-tasks>
+
+  <!-- Assigned Tasks Table Child Component -->
+  <app-assigned-tasks-table
+    [assignedTasks]="assignedTasks"
+    [isEditMode]="isEditMode"
+    [editingAssignmentId]="editingAssignmentId"
+    (updateAssignment)="onUpdateAssignment($event)"
+    (deleteAssignment)="onDeleteAssignment($event)">
+  </app-assigned-tasks-table>
+</div>
