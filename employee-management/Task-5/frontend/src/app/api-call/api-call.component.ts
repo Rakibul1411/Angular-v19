@@ -1,0 +1,218 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Employee } from '../models/employee.model';
+import { Task } from '../models/task.model';
+import { ApiCallService } from '../services/api-call.service';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ConfirmationService, MessageService } from 'primeng/api';
+
+@Component({
+  selector: 'app-api-call',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CardModule,
+    ButtonModule,
+    InputTextModule,
+    TableModule,
+    DialogModule,
+    ConfirmDialogModule,
+    ToastModule,
+    ToolbarModule
+  ],
+  templateUrl: './api-call.component.html',
+  styleUrls: ['./api-call.component.css'],
+  providers: [ConfirmationService, MessageService]
+})
+export class ApiCallComponent implements OnInit {
+  employees: Employee[] = [];
+  tasks: Task[] = [];
+  employeeForm: FormGroup;
+  taskForm: FormGroup;
+  selectedEmployee: Employee | null = null;
+  selectedTask: Task | null = null;
+
+  // Dialog states
+  employeeDialogVisible = false;
+  taskDialogVisible = false;
+
+  constructor(
+    private apiCallService: ApiCallService,
+    private fb: FormBuilder,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {
+    this.employeeForm = this.fb.group({
+      employeeName: ['', Validators.required],
+      employeeRole: ['', Validators.required]
+    });
+    this.taskForm = this.fb.group({
+      taskName: ['', Validators.required],
+      taskCode: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadEmployees();
+    this.loadTasks();
+  }
+
+  loadEmployees(): void {
+    this.apiCallService.getEmployees().subscribe((data: Employee[]) => {
+      this.employees = data;
+    });
+  }
+
+  loadTasks(): void {
+    this.apiCallService.getTasks().subscribe((data: Task[]) => {
+      this.tasks = data;
+    });
+  }
+
+  createEmployee(): void {
+    if (this.employeeForm.valid) {
+      const newEmployee: Omit<Employee, 'id'> = this.employeeForm.value;
+      this.apiCallService.createEmployee(newEmployee).subscribe(() => {
+        this.loadEmployees();
+        this.employeeForm.reset();
+        this.employeeDialogVisible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Employee created successfully'
+        });
+      });
+    }
+  }
+
+  updateEmployee(): void {
+    if (this.selectedEmployee && this.employeeForm.valid) {
+      const updatedEmployee: Employee = { ...this.selectedEmployee, ...this.employeeForm.value };
+      this.apiCallService.updateEmployee(updatedEmployee).subscribe(() => {
+        this.loadEmployees();
+        this.selectedEmployee = null;
+        this.employeeForm.reset();
+        this.employeeDialogVisible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Employee updated successfully'
+        });
+      });
+    }
+  }
+
+  deleteEmployee(id: number): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this employee?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.apiCallService.deleteEmployee(id).subscribe(() => {
+          this.loadEmployees();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Employee deleted successfully'
+          });
+        });
+      }
+    });
+  }
+
+  selectEmployee(employee: Employee): void {
+    this.selectedEmployee = employee;
+    this.employeeForm.patchValue(employee);
+    this.employeeDialogVisible = true;
+  }
+
+  openNewEmployeeDialog(): void {
+    this.selectedEmployee = null;
+    this.employeeForm.reset();
+    this.employeeDialogVisible = true;
+  }
+
+  hideEmployeeDialog(): void {
+    this.employeeDialogVisible = false;
+    this.selectedEmployee = null;
+    this.employeeForm.reset();
+  }
+
+  createTask(): void {
+    if (this.taskForm.valid) {
+      const newTask: Omit<Task, 'id'> = this.taskForm.value;
+      this.apiCallService.createTask(newTask).subscribe(() => {
+        this.loadTasks();
+        this.taskForm.reset();
+        this.taskDialogVisible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Task created successfully'
+        });
+      });
+    }
+  }
+
+  updateTask(): void {
+    if (this.selectedTask && this.taskForm.valid) {
+      const updatedTask: Task = { ...this.selectedTask, ...this.taskForm.value };
+      this.apiCallService.updateTask(updatedTask).subscribe(() => {
+        this.loadTasks();
+        this.selectedTask = null;
+        this.taskForm.reset();
+        this.taskDialogVisible = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Task updated successfully'
+        });
+      });
+    }
+  }
+
+  deleteTask(id: number): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this task?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.apiCallService.deleteTask(id).subscribe(() => {
+          this.loadTasks();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Task deleted successfully'
+          });
+        });
+      }
+    });
+  }
+
+  selectTask(task: Task): void {
+    this.selectedTask = task;
+    this.taskForm.patchValue(task);
+    this.taskDialogVisible = true;
+  }
+
+  openNewTaskDialog(): void {
+    this.selectedTask = null;
+    this.taskForm.reset();
+    this.taskDialogVisible = true;
+  }
+
+  hideTaskDialog(): void {
+    this.taskDialogVisible = false;
+    this.selectedTask = null;
+    this.taskForm.reset();
+  }
+}

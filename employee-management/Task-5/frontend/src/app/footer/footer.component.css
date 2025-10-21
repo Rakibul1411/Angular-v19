@@ -1,0 +1,17 @@
+/* Footer styling using regular CSS with Tailwind colors */
+:host {
+  display: block;
+  margin-top: auto;
+}
+
+/* Enhance PrimeNG toolbar */
+:host ::ng-deep .p-toolbar {
+  padding: 1rem 1.5rem;
+}
+
+/* Copyright text styling */
+:host ::ng-deep .p-toolbar .p-toolbar-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

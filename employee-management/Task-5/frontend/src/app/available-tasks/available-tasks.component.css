@@ -1,0 +1,86 @@
+/* PrimeNG Card Customization */
+::ng-deep .p-card {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .p-card .p-card-body {
+  padding: 0;
+}
+
+::ng-deep .p-card .p-card-content {
+  padding: 0;
+}
+
+/* PrimeNG Table Customization */
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f0f9ff !important;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem 1rem;
+}
+
+/* PrimeNG Checkbox Styling */
+::ng-deep .p-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+::ng-deep .p-checkbox .p-checkbox-box {
+  border: 2px solid #3b82f6;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+::ng-deep .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+  border-color: #2563eb;
+}
+
+/* PrimeNG Button Customization */
+::ng-deep .p-button {
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient Header Animation */
+.bg-gradient-to-r {
+  background-size: 200% auto;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+}

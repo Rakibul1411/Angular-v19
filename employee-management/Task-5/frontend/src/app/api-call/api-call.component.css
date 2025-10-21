@@ -1,0 +1,168 @@
+/* PrimeNG Toolbar Customization */
+::ng-deep .p-toolbar {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+::ng-deep .p-toolbar .p-toolbar-group-start {
+  width: 100%;
+}
+
+/* PrimeNG Card Customization */
+::ng-deep .p-card {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .p-card .p-card-body {
+  padding: 0;
+}
+
+::ng-deep .p-card .p-card-content {
+  padding: 0;
+}
+
+/* PrimeNG Table Customization */
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f0f9ff !important;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem 1rem;
+}
+
+/* PrimeNG Dialog Customization */
+::ng-deep .p-dialog {
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 0.75rem 0.75rem 0 0;
+  padding: 1.5rem;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+  padding: 2rem;
+}
+
+::ng-deep .p-dialog .p-dialog-footer {
+  padding: 1rem 2rem 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* PrimeNG Button Customization */
+::ng-deep .p-button {
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+}
+
+::ng-deep .p-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .p-button-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+
+::ng-deep .p-button-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* PrimeNG Input Customization */
+::ng-deep .p-inputtext {
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-inputtext:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+::ng-deep .p-inputtext.ng-invalid {
+  border-color: #ef4444;
+}
+
+/* PrimeNG Toast Customization */
+::ng-deep .p-toast {
+  z-index: 9999;
+}
+
+::ng-deep .p-toast .p-toast-message {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-success {
+  background: #10b981;
+  border: none;
+  color: white;
+}
+
+::ng-deep .p-toast .p-toast-message.p-toast-message-error {
+  background: #ef4444;
+  border: none;
+  color: white;
+}
+
+/* Gradient Header Animation */
+.bg-gradient-to-r {
+  background-size: 200% auto;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  ::ng-deep .p-toolbar {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  ::ng-deep .p-dialog {
+    width: 95vw !important;
+    margin: 0.5rem;
+  }
+}

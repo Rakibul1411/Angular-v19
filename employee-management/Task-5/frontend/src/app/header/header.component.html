@@ -1,0 +1,26 @@
+<p-menubar class="border-b shadow-sm bg-white" *ngIf="isAuthenticated" [model]="items">
+  <ng-template pTemplate="start">
+    <a class="flex items-center gap-2 text-blue-600 hover:text-blue-800 no-underline font-semibold text-lg transition-colors" routerLink="/employees">
+      <i class="pi pi-briefcase text-xl"></i>
+      <span class="hidden sm:block">Employee Management</span>
+    </a>
+  </ng-template>
+
+  <ng-template pTemplate="end">
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-gray-600 hidden md:inline font-medium">
+        Welcome, {{ currentUser?.firstName }} {{ currentUser?.lastName }}
+      </span>
+      <button
+        pButton
+        type="button"
+        label="Logout"
+        icon="pi pi-sign-out"
+        class="p-button-danger p-button-sm"
+        (click)="onLogout()"
+        aria-label="Logout"
+        title="Logout">
+      </button>
+    </div>
+  </ng-template>
+</p-menubar>

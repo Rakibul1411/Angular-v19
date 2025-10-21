@@ -1,0 +1,15 @@
+<div class="app-container">
+  <!-- Lazy loaded header - only shows when authenticated -->
+  <ng-container *ngIf="isAuthenticated && headerComponent">
+    <ng-container *ngComponentOutlet="headerComponent"></ng-container>
+  </ng-container>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Lazy loaded footer - only shows when authenticated -->
+  <ng-container *ngIf="isAuthenticated && footerComponent">
+    <ng-container *ngComponentOutlet="footerComponent"></ng-container>
+  </ng-container>
+</div>

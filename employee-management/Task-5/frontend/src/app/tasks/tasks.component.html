@@ -1,0 +1,170 @@
+<div class="container mx-auto p-4 lg:p-6">
+  <!-- Header Toolbar with PrimeNG -->
+  <p-toolbar class="mb-6">
+    <div class="p-toolbar-group-start">
+      <h1 class="text-2xl font-bold text-gray-800 m-0">Tasks Management</h1>
+    </div>
+    <div class="p-toolbar-group-end">
+      <p-button
+        label="Create Task"
+        icon="pi pi-plus"
+        (onClick)="goToCreateTask()"
+        class="p-button-primary">
+      </p-button>
+    </div>
+  </p-toolbar>
+
+  <!-- PrimeNG Card Container -->
+  <p-card class="shadow-lg">
+    <ng-template pTemplate="content">
+      <!-- PrimeNG DataTable -->
+      <p-table
+        [value]="tasks"
+        [paginator]="true"
+        [rows]="10"
+        [responsive]="true"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tasks"
+        [globalFilterFields]="['taskName', 'taskCode']"
+        class="p-datatable-sm">
+
+        <!-- Table Header -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-left">
+              <span class="font-semibold">SL No</span>
+            </th>
+            <th class="text-left">
+              <span class="font-semibold">Task Name</span>
+            </th>
+            <th class="text-left">
+              <span class="font-semibold">Task Code</span>
+            </th>
+            <th class="text-center">
+              <span class="font-semibold">Actions</span>
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- Table Body -->
+        <ng-template pTemplate="body" let-task let-rowIndex="rowIndex">
+          <tr class="hover:bg-gray-50">
+            <td class="text-gray-700">{{ rowIndex + 1 }}</td>
+            <td class="font-medium text-gray-900">{{ task.taskName }}</td>
+            <td class="text-gray-700">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                {{ task.taskCode }}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="flex justify-center gap-2">
+                <p-button
+                  icon="pi pi-pencil"
+                  [text]="true"
+                  severity="info"
+                  size="small"
+                  (onClick)="openUpdateModal(task)"
+                  pTooltip="Edit Task"
+                  tooltipPosition="top">
+                </p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  [text]="true"
+                  severity="danger"
+                  size="small"
+                  (onClick)="confirmDelete(task)"
+                  pTooltip="Delete Task"
+                  tooltipPosition="top">
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- Empty Message -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4" class="text-center py-8">
+              <div class="flex flex-col items-center gap-3">
+                <i class="pi pi-file text-4xl text-gray-400"></i>
+                <p class="text-gray-500 text-lg">No tasks found</p>
+                <p-button
+                  label="Create First Task"
+                  icon="pi pi-plus"
+                  [outlined]="true"
+                  (onClick)="goToCreateTask()">
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </p-card>
+</div>
+
+<!-- PrimeNG Update Task Dialog -->
+<p-dialog
+  header="Update Task"
+  [(visible)]="showUpdateModal"
+  [modal]="true"
+  [closable]="true"
+  [responsive]="true"
+  [style]="{ width: '90vw', maxWidth: '500px' }"
+  [baseZIndex]="10000">
+
+  <ng-template pTemplate="content">
+    <div class="flex flex-col gap-4 p-4">
+      <div class="field">
+        <label for="taskName" class="block text-sm font-medium text-gray-700 mb-2">
+          Task Name
+        </label>
+        <input
+          id="taskName"
+          type="text"
+          pInputText
+          [(ngModel)]="selectedTask.taskName"
+          placeholder="Enter task name"
+          class="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="taskCode" class="block text-sm font-medium text-gray-700 mb-2">
+          Task Code
+        </label>
+        <input
+          id="taskCode"
+          type="text"
+          pInputText
+          [(ngModel)]="selectedTask.taskCode"
+          placeholder="Enter task code"
+          class="w-full" />
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="closeUpdateModal()">
+      </p-button>
+      <p-button
+        label="Update"
+        icon="pi pi-check"
+        severity="primary"
+        (onClick)="submitUpdate()">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- PrimeNG Toast for notifications -->
+<p-toast></p-toast>
+
+<!-- PrimeNG Confirm Dialog for delete confirmation -->
+<p-confirmDialog></p-confirmDialog>

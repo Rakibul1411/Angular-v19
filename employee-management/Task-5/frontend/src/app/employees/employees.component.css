@@ -1,0 +1,101 @@
+/* Custom styling for PrimeNG components */
+
+::ng-deep .p-datatable {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+::ng-deep .p-datatable .p-datatable-header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background-color: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #f9fafb;
+}
+
+::ng-deep .p-toolbar {
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+::ng-deep .p-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+::ng-deep .p-card .p-card-content {
+  padding: 0;
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+  padding: 0;
+}
+
+::ng-deep .p-button.p-button-text {
+  color: #2563eb;
+}
+
+::ng-deep .p-button.p-button-text:hover {
+  color: #1d4ed8;
+  background-color: #eff6ff;
+}
+
+::ng-deep .p-button.p-button-text.p-button-danger {
+  color: #dc2626;
+}
+
+::ng-deep .p-button.p-button-text.p-button-danger:hover {
+  color: #b91c1c;
+  background-color: #fef2f2;
+}
+
+::ng-deep .p-paginator {
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Toast positioning */
+::ng-deep .p-toast {
+  z-index: 9999;
+}
+
+/* Confirm dialog styling */
+::ng-deep .p-confirmdialog .p-dialog-header {
+  background-color: #ef4444;
+}
+
+::ng-deep .p-confirmdialog .p-confirmdialog-icon {
+  color: #ef4444;
+}
+

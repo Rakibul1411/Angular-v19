@@ -1,0 +1,341 @@
+<div class="container mx-auto p-4 lg:p-6">
+  <!-- Header Section -->
+  <p-toolbar class="mb-6">
+    <div class="p-toolbar-group-start">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800 m-0">
+          API Call Management Dashboard
+        </h1>
+        <p class="text-gray-600 text-sm mt-1">
+          Manage employees and tasks through REST API calls
+        </p>
+      </div>
+    </div>
+    <div class="p-toolbar-group-end">
+      <p-button
+        label="Refresh Data"
+        icon="pi pi-refresh"
+        (onClick)="loadEmployees(); loadTasks()"
+        class="p-button-secondary">
+      </p-button>
+    </div>
+  </p-toolbar>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Employees Section -->
+    <p-card class="shadow-lg">
+      <ng-template pTemplate="header">
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white rounded-t-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-users text-xl"></i>
+              <h3 class="text-lg font-semibold m-0">Employees</h3>
+            </div>
+            <span class="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-bold">
+              {{ employees.length }}
+            </span>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <p-table
+          [value]="employees"
+          [paginator]="employees.length > 10"
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} employees"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          styleClass="p-datatable-gridlines p-datatable-sm"
+          responsiveLayout="scroll">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="font-semibold">Name</th>
+              <th class="font-semibold">Role</th>
+              <th class="w-32 font-semibold text-center">Actions</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-employee>
+            <tr>
+              <td class="font-medium text-gray-800">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-user text-blue-500"></i>
+                  {{ employee.employeeName }}
+                </div>
+              </td>
+              <td>
+                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">
+                  {{ employee.employeeRole }}
+                </span>
+              </td>
+              <td class="text-center">
+                <div class="flex justify-center gap-2">
+                  <p-button
+                    icon="pi pi-pencil"
+                    class="p-button-sm p-button-info p-button-outlined"
+                    pTooltip="Edit employee"
+                    tooltipPosition="top"
+                    (onClick)="selectEmployee(employee)">
+                  </p-button>
+                  <p-button
+                    icon="pi pi-trash"
+                    class="p-button-sm p-button-danger p-button-outlined"
+                    pTooltip="Delete employee"
+                    tooltipPosition="top"
+                    (onClick)="deleteEmployee(employee.id)">
+                  </p-button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="3" class="text-center py-8">
+                <div class="flex flex-col items-center gap-2 text-gray-500">
+                  <i class="pi pi-users text-4xl"></i>
+                  <p class="text-lg font-medium">No employees found</p>
+                  <p class="text-sm">Add your first employee to get started</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="flex justify-center p-3 bg-gray-50">
+          <p-button
+            label="Add New Employee"
+            icon="pi pi-plus"
+            (onClick)="openNewEmployeeDialog()"
+            class="p-button-primary">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <!-- Tasks Section -->
+    <p-card class="shadow-lg">
+      <ng-template pTemplate="header">
+        <div class="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white rounded-t-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-list text-xl"></i>
+              <h3 class="text-lg font-semibold m-0">Tasks</h3>
+            </div>
+            <span class="bg-white text-green-600 px-3 py-1 rounded-full text-sm font-bold">
+              {{ tasks.length }}
+            </span>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <p-table
+          [value]="tasks"
+          [paginator]="tasks.length > 10"
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tasks"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          styleClass="p-datatable-gridlines p-datatable-sm"
+          responsiveLayout="scroll">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="font-semibold">Task Name</th>
+              <th class="font-semibold">Task Code</th>
+              <th class="w-32 font-semibold text-center">Actions</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-task>
+            <tr>
+              <td class="font-medium text-gray-800">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-check-circle text-green-500"></i>
+                  {{ task.taskName }}
+                </div>
+              </td>
+              <td>
+                <span class="px-2 py-1 bg-green-100 text-green-700 rounded text-sm font-medium">
+                  {{ task.taskCode }}
+                </span>
+              </td>
+              <td class="text-center">
+                <div class="flex justify-center gap-2">
+                  <p-button
+                    icon="pi pi-pencil"
+                    class="p-button-sm p-button-info p-button-outlined"
+                    pTooltip="Edit task"
+                    tooltipPosition="top"
+                    (onClick)="selectTask(task)">
+                  </p-button>
+                  <p-button
+                    icon="pi pi-trash"
+                    class="p-button-sm p-button-danger p-button-outlined"
+                    pTooltip="Delete task"
+                    tooltipPosition="top"
+                    (onClick)="deleteTask(task.id)">
+                  </p-button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="3" class="text-center py-8">
+                <div class="flex flex-col items-center gap-2 text-gray-500">
+                  <i class="pi pi-list text-4xl"></i>
+                  <p class="text-lg font-medium">No tasks found</p>
+                  <p class="text-sm">Create your first task to get started</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="flex justify-center p-3 bg-gray-50">
+          <p-button
+            label="Add New Task"
+            icon="pi pi-plus"
+            (onClick)="openNewTaskDialog()"
+            class="p-button-primary">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <!-- Employee Dialog -->
+  <p-dialog
+    [(visible)]="employeeDialogVisible"
+    [modal]="true"
+    [style]="{width: '450px'}"
+    [header]="selectedEmployee ? 'Update Employee' : 'Add New Employee'"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="hideEmployeeDialog()">
+
+    <form [formGroup]="employeeForm" (ngSubmit)="selectedEmployee ? updateEmployee() : createEmployee()">
+      <div class="flex flex-col gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="pi pi-user mr-2 text-blue-500"></i>
+            Employee Name *
+          </label>
+          <input
+            pInputText
+            formControlName="employeeName"
+            placeholder="Enter employee name"
+            class="w-full"
+            [class.ng-invalid]="employeeForm.get('employeeName')?.invalid && employeeForm.get('employeeName')?.touched">
+          <small class="text-red-500" *ngIf="employeeForm.get('employeeName')?.invalid && employeeForm.get('employeeName')?.touched">
+            Employee name is required
+          </small>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="pi pi-briefcase mr-2 text-blue-500"></i>
+            Employee Role *
+          </label>
+          <input
+            pInputText
+            formControlName="employeeRole"
+            placeholder="Enter employee role"
+            class="w-full"
+            [class.ng-invalid]="employeeForm.get('employeeRole')?.invalid && employeeForm.get('employeeRole')?.touched">
+          <small class="text-red-500" *ngIf="employeeForm.get('employeeRole')?.invalid && employeeForm.get('employeeRole')?.touched">
+            Employee role is required
+          </small>
+        </div>
+      </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (onClick)="hideEmployeeDialog()">
+      </p-button>
+      <p-button
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-primary"
+        [disabled]="!employeeForm.valid"
+        (onClick)="selectedEmployee ? updateEmployee() : createEmployee()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Task Dialog -->
+  <p-dialog
+    [(visible)]="taskDialogVisible"
+    [modal]="true"
+    [style]="{width: '450px'}"
+    [header]="selectedTask ? 'Update Task' : 'Add New Task'"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="hideTaskDialog()">
+
+    <form [formGroup]="taskForm" (ngSubmit)="selectedTask ? updateTask() : createTask()">
+      <div class="flex flex-col gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="pi pi-tag mr-2 text-green-500"></i>
+            Task Name *
+          </label>
+          <input
+            pInputText
+            formControlName="taskName"
+            placeholder="Enter task name"
+            class="w-full"
+            [class.ng-invalid]="taskForm.get('taskName')?.invalid && taskForm.get('taskName')?.touched">
+          <small class="text-red-500" *ngIf="taskForm.get('taskName')?.invalid && taskForm.get('taskName')?.touched">
+            Task name is required
+          </small>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="pi pi-hashtag mr-2 text-green-500"></i>
+            Task Code *
+          </label>
+          <input
+            pInputText
+            formControlName="taskCode"
+            placeholder="Enter task code"
+            class="w-full"
+            [class.ng-invalid]="taskForm.get('taskCode')?.invalid && taskForm.get('taskCode')?.touched">
+          <small class="text-red-500" *ngIf="taskForm.get('taskCode')?.invalid && taskForm.get('taskCode')?.touched">
+            Task code is required
+          </small>
+        </div>
+      </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (onClick)="hideTaskDialog()">
+      </p-button>
+      <p-button
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-primary"
+        [disabled]="!taskForm.valid"
+        (onClick)="selectedTask ? updateTask() : createTask()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- PrimeNG Components -->
+  <p-toast position="top-right"></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>

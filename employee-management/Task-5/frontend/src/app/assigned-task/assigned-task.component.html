@@ -1,0 +1,90 @@
+<div class="container mx-auto p-4 lg:p-6">
+  <!-- Header Section -->
+  <p-toolbar class="mb-6">
+    <div class="p-toolbar-group-start">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800 m-0">
+          {{ isEditMode ? 'Update Assignment' : 'Assign Tasks' }}
+        </h1>
+        <p class="text-gray-600 text-sm mt-1">
+          {{ isEditMode ? 'Modify the employee task assignment' : 'Select an employee and assign tasks' }}
+        </p>
+      </div>
+    </div>
+  </p-toolbar>
+
+  <!-- Employee Selection Card -->
+  <p-card class="mb-6 shadow-lg">
+    <ng-template pTemplate="header">
+      <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-4 text-white rounded-t-lg">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-user text-xl"></i>
+          <h3 class="text-lg font-semibold m-0">Employee Selection</h3>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="p-4">
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="pi pi-users mr-2 text-purple-500"></i>
+          Select Employee *
+        </label>
+        <div class="relative inline-block w-full md:w-96">
+          <button
+            (click)="toggleDropdown()"
+            class="w-full bg-white border-2 border-gray-300 rounded-lg px-4 py-3 text-left flex justify-between items-center hover:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+            <span class="font-medium">{{ getSelectedEmployeeName() }}</span>
+            <i class="pi transition-transform duration-200"
+               [ngClass]="showDropdown ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+          </button>
+
+          <div *ngIf="showDropdown"
+               class="absolute z-20 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-2xl max-h-64 overflow-y-auto">
+            <div *ngFor="let employee of employees"
+                 (click)="selectEmployee(employee)"
+                 class="px-4 py-3 hover:bg-purple-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors">
+              <div class="font-semibold text-gray-800">{{ employee.employeeName }}</div>
+              <div class="text-sm text-gray-500 mt-1">
+                <i class="pi pi-briefcase mr-1"></i>{{ employee.employeeRole }}
+              </div>
+            </div>
+            <div *ngIf="employees.length === 0"
+                 class="px-4 py-3 text-gray-500 text-center">
+              <i class="pi pi-info-circle mr-2"></i>No employees available
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+
+  <!-- Task Management Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- Available Tasks Component -->
+    <div>
+      <app-available-tasks
+        [tasks]="tasks"
+        [selectedEmployeeId]="selectedEmployeeId"
+        [selectedTasks]="selectedTasks"
+        [isEditMode]="isEditMode"
+        (taskSelectionChange)="onTaskSelectionChange($event)"
+        (assignTasks)="onAssignTasks($event)"
+        (cancelEdit)="onCancelEdit()">
+      </app-available-tasks>
+    </div>
+
+    <!-- Assigned Tasks Table Component -->
+    <div>
+      <app-assigned-tasks-table
+        [assignedTasks]="assignedTasks"
+        [isEditMode]="isEditMode"
+        [editingAssignmentId]="editingAssignmentId"
+        (updateAssignment)="onUpdateAssignment($event)"
+        (deleteAssignment)="onDeleteAssignment($event)">
+      </app-assigned-tasks-table>
+    </div>
+  </div>
+</div>
+
+<!-- PrimeNG Toast for notifications -->
+<p-toast position="top-right"></p-toast>

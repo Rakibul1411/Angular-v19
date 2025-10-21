@@ -1,0 +1,90 @@
+<div *ngIf="assignedTasks.length > 0" class="mt-6">
+  <p-card class="shadow-lg">
+    <ng-template pTemplate="header">
+      <div class="bg-gradient-to-r from-green-500 to-green-600 p-4 text-white rounded-t-lg">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-xl"></i>
+            <h3 class="text-lg font-semibold m-0">Assigned Tasks</h3>
+          </div>
+          <span class="bg-white text-green-600 px-3 py-1 rounded-full text-sm font-bold">
+            {{ assignedTasks.length }}
+          </span>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <p-table
+        [value]="assignedTasks"
+        [paginator]="assignedTasks.length > 10"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} assignments"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [globalFilterFields]="['employeeName']"
+        styleClass="p-datatable-gridlines p-datatable-sm"
+        responsiveLayout="scroll">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="w-20 font-semibold">SL No</th>
+            <th pSortableColumn="employeeName" class="font-semibold">
+              Employee Name <p-sortIcon field="employeeName"></p-sortIcon>
+            </th>
+            <th class="font-semibold">Assigned Tasks</th>
+            <th class="w-48 font-semibold text-center">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-assignment let-rowIndex="rowIndex">
+          <tr [class.bg-yellow-100]="isEditMode && editingAssignmentId === assignment.id">
+            <td class="text-center font-medium">{{ rowIndex + 1 }}</td>
+            <td class="font-semibold text-gray-800">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-user text-green-500"></i>
+                {{ assignment.employeeName }}
+              </div>
+            </td>
+            <td>
+              <div class="flex flex-wrap gap-1">
+                <span
+                  *ngFor="let task of assignment.assignedTasks"
+                  class="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium"
+                  [pTooltip]="task.taskName"
+                  tooltipPosition="top">
+                  {{ task.taskName }}
+                </span>
+              </div>
+            </td>
+            <td class="text-center">
+              <div class="flex justify-center gap-2">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  [label]="isEditMode && editingAssignmentId === assignment.id ? 'Editing...' : 'Update'"
+                  (click)="onUpdateAssignment(assignment)"
+                  [disabled]="isEditMode && editingAssignmentId !== assignment.id"
+                  class="p-button-sm p-button-info p-button-outlined"
+                  pTooltip="Update assignment"
+                  tooltipPosition="top">
+                </button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  label="Delete"
+                  (click)="onDeleteAssignment(assignment.id)"
+                  [disabled]="isEditMode"
+                  class="p-button-sm p-button-danger p-button-outlined"
+                  pTooltip="Delete assignment"
+                  tooltipPosition="top">
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </p-card>
+</div>

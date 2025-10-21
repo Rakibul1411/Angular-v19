@@ -1,0 +1,101 @@
+<p-card class="shadow-lg">
+  <ng-template pTemplate="header">
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white rounded-t-lg">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-list text-xl"></i>
+          <h3 class="text-lg font-semibold m-0">Available Tasks</h3>
+        </div>
+        <span *ngIf="tasks.length > 0" class="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-bold">
+          {{ tasks.length }}
+        </span>
+      </div>
+      <p *ngIf="!selectedEmployeeId" class="text-sm text-yellow-200 mt-2 flex items-center gap-1">
+        <i class="pi pi-info-circle"></i>
+        Please select an employee first to enable task selection
+      </p>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p-table
+      [value]="tasks"
+      [paginator]="tasks.length > 10"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tasks"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [globalFilterFields]="['taskName', 'taskCode']"
+      styleClass="p-datatable-gridlines p-datatable-sm"
+      responsiveLayout="scroll">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="w-20 text-center">
+            <p-checkbox [binary]="true" [disabled]="true" pTooltip="Select all tasks"></p-checkbox>
+          </th>
+          <th pSortableColumn="taskName" class="font-semibold">
+            Task Name <p-sortIcon field="taskName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="taskCode" class="font-semibold">
+            Task Code <p-sortIcon field="taskCode"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-task>
+        <tr [class.opacity-50]="!selectedEmployeeId" [class.cursor-not-allowed]="!selectedEmployeeId">
+          <td class="text-center">
+            <p-checkbox
+              [binary]="true"
+              [disabled]="!selectedEmployeeId"
+              [ngModel]="isTaskSelected(task.id)"
+              (onChange)="onTaskCheckboxChange(task.id, $event.checked)"
+              [pTooltip]="selectedEmployeeId ? 'Select task: ' + task.taskName : 'Please select an employee first'">
+            </p-checkbox>
+          </td>
+          <td class="font-medium" [class.text-gray-400]="!selectedEmployeeId">
+            {{ task.taskName }}
+          </td>
+          <td [class.text-gray-400]="!selectedEmployeeId">
+            <span class="text-sm px-2 py-1 bg-blue-100 text-blue-700 rounded">{{ task.taskCode }}</span>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" class="text-center py-8">
+            <div class="flex flex-col items-center gap-2 text-gray-500">
+              <i class="pi pi-inbox text-4xl"></i>
+              <p class="text-lg font-medium">No tasks available</p>
+              <p class="text-sm">Create some tasks first to assign them</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2 p-3 bg-gray-50">
+      <button
+        *ngIf="isEditMode"
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        (click)="onCancelEdit()"
+        class="p-button-secondary p-button-outlined">
+      </button>
+      <button
+        pButton
+        type="button"
+        [label]="isEditMode ? 'Update Assignment' : 'Assign Tasks'"
+        [icon]="isEditMode ? 'pi pi-refresh' : 'pi pi-check'"
+        (click)="onAssignTasks()"
+        [disabled]="!selectedEmployeeId || selectedTasks.length === 0"
+        [pTooltip]="!selectedEmployeeId ? 'Select an employee first' : selectedTasks.length === 0 ? 'Select at least one task' : ''"
+        class="p-button-primary">
+      </button>
+    </div>
+  </ng-template>
+</p-card>
