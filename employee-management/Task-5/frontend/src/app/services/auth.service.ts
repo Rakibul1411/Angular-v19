@@ -8,9 +8,6 @@ import { LoginRequest, LoginResponse } from '../models/auth.model';
   providedIn: 'root'
 })
 export class AuthService {
-
-  // replay subject
-  // switchMap
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
