@@ -7,15 +7,15 @@ import {
   updateBook,
   deleteBook,
 } from '../controllers/bookController.js';
-import { authenticateToken } from '../middlewares/auth.js';
+import { authenticateToken, requireRole } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.post('/', authenticateToken, addBook);
-router.get('/', authenticateToken, getBooks);
+router.post('/addBook', authenticateToken, requireRole('admin'), addBook);
+router.get('/getBooks', authenticateToken, getBooks);
 router.get('/all', authenticateToken, getAllBooksController);
 router.get('/:id', authenticateToken, getBookById);
-router.put('/:id', authenticateToken, updateBook);
-router.delete('/:id', authenticateToken, deleteBook);
+router.put('/:id', authenticateToken, requireRole('admin'), updateBook);
+router.delete('/:id', authenticateToken, requireRole('admin'), deleteBook);
 
 export default router;

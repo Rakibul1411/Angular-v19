@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   registerUser,
-  getUser,
+  getUserById,
   updateUser,
   findByRole,
   getAllUsersController,
@@ -19,7 +19,7 @@ router.post('/refresh', refreshTokenController);
 router.post('/logout', logoutController);
 router.get('/role', authenticateToken, findByRole);
 router.get('/all', authenticateToken, getAllUsersController);
-router.get('/:id', getUser);
+router.get('/:id', authenticateToken, getUserById);
 router.put('/:id', authenticateToken, updateUser);
 
 export default router;

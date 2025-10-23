@@ -13,3 +13,18 @@ export const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+// role can be a string or array of allowed roles
+export const requireRole = (role) => {
+  return (req, res, next) => {
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
+    const allowed = Array.isArray(role) ? role : [role];
+    if (!allowed.includes(currentUser.role)) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+
+    next();
+  };
+};

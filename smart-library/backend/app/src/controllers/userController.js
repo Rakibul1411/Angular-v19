@@ -23,15 +23,29 @@ export const registerUser = async (req, res, next) => {
 
 
 // Get user by ID
-export const getUser = async (req, res, next) => {
+export const getUserById = async (req, res, next) => {
   try {
+    const userId = req.params.id;
+    const currentUser = req.user;
+
+    if (!currentUser) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    if (currentUser.id !== userId && currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized to view this user' });
+    }
+
     const user = await userService.findUserById(req.params.id);
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found'});
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json(user);
+    const safeUser = user.toObject ? user.toObject() : { ...user };
+    if (safeUser.password) delete safeUser.password;
+
+    res.status(200).json(safeUser);
   } catch (err) {
     next(err);
   }
@@ -74,11 +88,19 @@ export const updateUser = async (req, res, next) => {
 // Find users by role (query parameter: role=student or role=faculty)
 export const findByRole = async (req, res, next) => {
   try {
+
+    const currentUser = req.user;  // From JWT
+
+    // Authorization: Allow only admins to view all users
+    if (currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can view all users' });
+    }
+
     const { role } = req.query;
 
-    if (!role || !['student', 'faculty'].includes(role)) {
+    if (!role || !['admin', 'student', 'teacher'].includes(role)) {
       return res.status(400).json({
-        error: 'Invalid or missing role. Use role=student or role=faculty'
+        error: 'Invalid or missing role. Use role=admin, role=student, or role=teacher'
       });
     }
 
@@ -96,9 +118,8 @@ export const findByRole = async (req, res, next) => {
 // Get all users
 export const getAllUsersController = async (req, res, next) => {
   try {
-    const currentUser = req.user;  // From JWT
+    const currentUser = req.user;
 
-    // Authorization: Allow only admins to view all users
     if (currentUser.role !== 'admin') {
       return res.status(403).json({ error: 'Only admins can view all users' });
     }
@@ -114,7 +135,6 @@ export const getAllUsersController = async (req, res, next) => {
   }
 };
 
-// Login user
 export const loginUserController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -145,7 +165,6 @@ export const loginUserController = async (req, res, next) => {
       { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN }
     );
 
-    // Store refresh token
     refreshTokens.push(refreshToken);
 
     res.status(200).json({
@@ -159,7 +178,7 @@ export const loginUserController = async (req, res, next) => {
   }
 };
 
-// Refresh access token
+
 export const refreshTokenController = (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) return res.status(401).json({ error: 'Refresh token required' });
@@ -178,9 +197,9 @@ export const refreshTokenController = (req, res) => {
   });
 };
 
-// Logout (invalidate refresh token)
+
 export const logoutController = (req, res) => {
   const { refreshToken } = req.body;
   refreshTokens = refreshTokens.filter(token => token !== refreshToken);
-  res.status(204).send(); // No content
+  res.status(200).json({ message: 'Logged out successfully' });
 };
