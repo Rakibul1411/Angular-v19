@@ -13,7 +13,7 @@ import { authenticateToken, requireRole } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-router.post('/', authenticateToken, issueBook);
+router.post('/issueBook', authenticateToken, issueBook);
 router.post('/returns', authenticateToken, returnBook);
 router.get('/overdue', authenticateToken, requireRole('admin'), getOverdueLoans);
 

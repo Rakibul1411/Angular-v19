@@ -21,7 +21,8 @@ export const addBook = async (req, res, next) => {
 // Get all books by title, author, or keyword
 export const getBooks = async (req, res, next) => {
   try {
-    const books = await bookService.searchBooks(req.query.search);
+    const { search, title, author } = req.query;
+    const books = await bookService.searchBooks(search, title, author);
     
     res.status(200).json( books );
   } catch (err) {
@@ -103,7 +104,7 @@ export const deleteBook = async (req, res, next) => {
       });
     }
 
-    res.status(204).json( 'Book deleted successfully' );
+    res.status(200).json( {'message': 'Book deleted successfully' });
   } catch (err) {
     next(err);
   }

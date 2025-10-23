@@ -65,15 +65,33 @@ export const createBook = async (bookData) => {
 };
 
 
-export const searchBooks = async (searchTerm) => {
-  const query = searchTerm 
-    ? {
-        $or: [
-          { title: { $regex: `\\b${searchTerm}\\b`, $options: 'i' } },
-          { author: { $regex: `\\b${searchTerm}\\b`, $options: 'i' } }
-        ]
-      }
-    : {};
+export const searchBooks = async (searchTerm, titleFilter, authorFilter) => {
+  let query = {};
+  
+  if (searchTerm) {
+    // General search across title and author
+    query = {
+      $or: [
+        { title: { $regex: `\\b${searchTerm}\\b`, $options: 'i' } },
+        { author: { $regex: `\\b${searchTerm}\\b`, $options: 'i' } }
+      ]
+    };
+  } else {
+    // Specific field filters
+    const conditions = [];
+    
+    if (titleFilter) {
+      conditions.push({ title: { $regex: titleFilter, $options: 'i' } });
+    }
+    
+    if (authorFilter) {
+      conditions.push({ author: { $regex: authorFilter, $options: 'i' } });
+    }
+    
+    if (conditions.length > 0) {
+      query = conditions.length === 1 ? conditions[0] : { $and: conditions };
+    }
+  }
   
   return await Book.find(query);
 };
