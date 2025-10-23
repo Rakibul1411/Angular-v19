@@ -78,6 +78,11 @@ export const searchBooks = async (searchTerm) => {
   return await Book.find(query);
 };
 
+// Return all books (no search filter)
+export const getAllBooks = async () => {
+  return await Book.find({});
+};
+
 
 export const updateBookById = async (id, bookData) => {
   if (bookData.isbn) {

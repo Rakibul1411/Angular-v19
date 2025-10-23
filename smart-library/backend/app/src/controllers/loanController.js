@@ -3,7 +3,17 @@ import { loanService } from '../services/index.js';
 // Issue a book to a user
 export const issueBook = async (req, res, next) => {
   try {
-    const loan = await loanService.createLoan(req.body);
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
+    // Ensure the loan is created under the logged-in user unless admin specifies another user
+    const loanData = {
+      user_id: req.body.user_id || currentUser.id,
+      book_id: req.body.book_id,
+      due_date: req.body.due_date
+    };
+
+    const loan = await loanService.createLoan(loanData);
 
     if (!loan.success) {
       const statusCode = 
@@ -26,6 +36,16 @@ export const issueBook = async (req, res, next) => {
 // Return a book
 export const returnBook = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
+    // Optionally, ensure the requester is the loan owner or admin
+    const loanRecord = await loanService.findLoanById(req.body.loan_id);
+    if (!loanRecord) return res.status(404).json({ success: false, error: 'Loan not found' });
+    if (loanRecord.user.toString() !== currentUser.id && currentUser.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Not authorized to return this loan' });
+    }
+
     const loan = await loanService.returnLoan(req.body.loan_id);
     
     if (!loan.success) {
@@ -53,6 +73,14 @@ export const getUserLoans = async (req, res, next) => {
       });
     }
 
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
+    // Allow only the user themselves or admin
+    if (currentUser.id !== user_id && currentUser.role !== 'admin') {
+      return res.status(403).json({ success: false, error: 'Not authorized to view these loans' });
+    }
+
     const serviceResult = await loanService.getUserLoans(user_id);
     
     if (!serviceResult.success) {
@@ -71,6 +99,9 @@ export const getUserLoans = async (req, res, next) => {
 // Get overdue loans
 export const getOverdueLoans = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser || currentUser.role !== 'admin') return res.status(403).json({ error: 'Admin required' });
+
     const result = await loanService.getOverdueLoans();
     
     if (!result.success) {
@@ -98,6 +129,15 @@ export const extendLoan = async (req, res, next) => {
       });
     }
 
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
+    const loanRecord = await loanService.findLoanById(id);
+    if (!loanRecord) return res.status(404).json({ error: 'Loan not found' });
+    if (loanRecord.user.toString() !== currentUser.id && currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized to extend this loan' });
+    }
+
     const result = await loanService.extendLoan(id, extension_days);
     
     if (!result.success) {
@@ -116,6 +156,9 @@ export const extendLoan = async (req, res, next) => {
 // Get most borrowed books
 export const getPopularBooks = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
     const result = await loanService.getPopularBooks();
     
     if (!result.success) {
@@ -133,6 +176,9 @@ export const getPopularBooks = async (req, res, next) => {
 // Get most active users
 export const getActiveUsers = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
+
     const result = await loanService.getActiveUsers();
     
     if (!result.success) {
@@ -150,6 +196,9 @@ export const getActiveUsers = async (req, res, next) => {
 // Get system overview statistics
 export const getSystemOverview = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser || currentUser.role !== 'admin') return res.status(403).json({ error: 'Admin required' });
+
     const result = await loanService.getSystemOverview();
     
     if (!result.success) {

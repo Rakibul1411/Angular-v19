@@ -3,6 +3,10 @@ import { bookService } from '../services/index.js';
 // Add a new book
 export const addBook = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser || currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can add books' });
+    }
     const book = await bookService.createBook(req.body);
     
     if (!book) {
@@ -30,6 +34,20 @@ export const getBooks = async (req, res, next) => {
 };
 
 
+// Get all books (no search) - used for listing all available books
+export const getAllBooksController = async (req, res, next) => {
+  try {
+    const books = await bookService.getAllBooks();
+
+    res.status(200).json(
+      books.map(formatBookResponse)
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 // Get book by ID
 export const getBookById = async (req, res, next) => {
   try {
@@ -51,6 +69,10 @@ export const getBookById = async (req, res, next) => {
 // Update book
 export const updateBook = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser || currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can update books' });
+    }
     const book = await bookService.updateBookById(req.params.id, req.body);
 
     if (book === null) {
@@ -81,6 +103,10 @@ export const updateBook = async (req, res, next) => {
 // Delete book
 export const deleteBook = async (req, res, next) => {
   try {
+    const currentUser = req.user;
+    if (!currentUser || currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can delete books' });
+    }
     const book = await bookService.deleteBookById(req.params.id);
 
     if (!book) {

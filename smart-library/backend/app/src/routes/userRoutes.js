@@ -17,7 +17,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUserController);
 router.post('/refresh', refreshTokenController);
 router.post('/logout', logoutController);
-router.get('/', authenticateToken, findByRole);
+router.get('/role', authenticateToken, findByRole);
 router.get('/all', authenticateToken, getAllUsersController);
 router.get('/:id', getUser);
 router.put('/:id', authenticateToken, updateUser);
