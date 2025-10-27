@@ -1,0 +1,218 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Student Dashboard</h1>
+          <p class="text-gray-600 mt-1">Welcome back, {{ currentUser?.name }}!</p>
+          <p class="text-sm text-gray-500">Role: {{ currentUser?.role }}</p>
+        </div>
+        <p-button
+          label="Logout"
+          icon="pi pi-sign-out"
+          severity="danger"
+          (onClick)="logout()"
+        ></p-button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <!-- Total Books Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Total Books</div>
+            <div class="text-3xl font-bold text-gray-900">
+              {{ stats.totalBooks }}
+            </div>
+            <div class="text-xs text-gray-500 mt-2">
+              All books in library
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-lg">
+            <i class="pi pi-book text-blue-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="Browse Books"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            styleClass="p-0"
+            (onClick)="navigateToBooks()"
+          ></p-button>
+        </div>
+      </p-card>
+
+      <!-- Active Loans Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Active Loans</div>
+            <div class="text-3xl font-bold text-gray-900">
+              {{ stats.activeLoans }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-lg">
+            <i class="pi pi-shopping-cart text-green-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="View Loans"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            styleClass="p-0"
+            (onClick)="navigateToMyLoans()"
+          ></p-button>
+        </div>
+      </p-card>
+
+      <!-- Total Borrowed Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Total Borrowed</div>
+            <div class="text-3xl font-bold text-gray-900">
+              {{ stats.totalBorrowed }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-cyan-100 rounded-lg">
+            <i class="pi pi-history text-cyan-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="View History"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            styleClass="p-0"
+            (onClick)="navigateToLoanHistory()"
+          ></p-button>
+        </div>
+      </p-card>
+
+      <!-- Overdue Loans Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Overdue Loans</div>
+            <div class="text-3xl font-bold" [class.text-red-600]="stats.overdueLoans > 0" [class.text-gray-900]="stats.overdueLoans === 0">
+              {{ stats.overdueLoans }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center" [class.bg-red-100]="stats.overdueLoans > 0" [class.bg-gray-100]="stats.overdueLoans === 0">
+            <i class="pi pi-exclamation-triangle" [class.text-red-600]="stats.overdueLoans > 0" [class.text-gray-400]="stats.overdueLoans === 0" class="text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            *ngIf="stats.overdueLoans > 0"
+            label="Return Now"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            severity="danger"
+            styleClass="p-0"
+            (onClick)="navigateToMyLoans()"
+          ></p-button>
+          <span *ngIf="stats.overdueLoans === 0" class="text-sm text-gray-500">
+            <i class="pi pi-check mr-1"></i>All up to date
+          </span>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-6">
+      <p-card header="Quick Actions" styleClass="shadow-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <p-button
+            label="Browse Books"
+            icon="pi pi-book"
+            severity="info"
+            styleClass="w-full"
+            (onClick)="navigateToBooks()"
+          ></p-button>
+          <p-button
+            label="Issue Book"
+            icon="pi pi-plus"
+            severity="success"
+            styleClass="w-full"
+            (onClick)="navigateToIssueBook()"
+          ></p-button>
+          <p-button
+            label="My Loans"
+            icon="pi pi-list"
+            severity="help"
+            styleClass="w-full"
+            (onClick)="navigateToMyLoans()"
+          ></p-button>
+          <p-button
+            label="My Profile"
+            icon="pi pi-user"
+            severity="secondary"
+            styleClass="w-full"
+            (onClick)="navigateToProfile()"
+          ></p-button>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Library Information -->
+    <div>
+      <p-card header="Library Information" styleClass="shadow-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0">
+              <i class="pi pi-info-circle text-blue-600"></i>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">Borrowing Limit</div>
+              <div class="text-sm text-gray-600">You can borrow up to 5 books at a time</div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 flex items-center justify-center bg-green-100 rounded-lg flex-shrink-0">
+              <i class="pi pi-clock text-green-600"></i>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">Loan Period</div>
+              <div class="text-sm text-gray-600">Standard loan period is 14 days</div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 flex items-center justify-center bg-purple-100 rounded-lg flex-shrink-0">
+              <i class="pi pi-refresh text-purple-600"></i>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">Extensions</div>
+              <div class="text-sm text-gray-600">You can extend loans by 7 days if needed</div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 flex items-center justify-center bg-red-100 rounded-lg flex-shrink-0">
+              <i class="pi pi-exclamation-triangle text-red-600"></i>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">Late Fees</div>
+              <div class="text-sm text-gray-600">Please return books on time to avoid late fees</div>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

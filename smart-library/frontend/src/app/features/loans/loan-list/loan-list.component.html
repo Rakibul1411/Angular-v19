@@ -1,0 +1,174 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <p-toast />
+  <p-confirmDialog />
+
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <button
+          pButton
+          icon="pi pi-arrow-left"
+          class="p-button-text p-button-secondary"
+          (click)="goBack()"
+          pTooltip="Back to Dashboard"
+          tooltipPosition="bottom"
+        ></button>
+        <h1 class="text-3xl font-bold text-gray-800">My Loans</h1>
+      </div>
+      <button
+        pButton
+        label="Issue Book"
+        icon="pi pi-plus"
+        class="p-button-success"
+        (click)="goToIssueBook()"
+      ></button>
+    </div>
+
+    <!-- Filters Card -->
+    <p-card class="mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Search -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Search by book title, author, or user
+          </label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearchChange()"
+              placeholder="Search loans..."
+              class="w-full"
+            />
+          </span>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Filter by Status
+          </label>
+          <p-select
+            [(ngModel)]="selectedStatus"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="onStatusFilterChange()"
+            [style]="{ width: '100%' }"
+            placeholder="Select status"
+          />
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Loans Table -->
+    <p-card>
+      <p-table
+        [value]="filteredLoans"
+        [loading]="loading"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} loans"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        styleClass="p-datatable-sm"
+        [tableStyle]="{ 'min-width': '60rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="book.title">
+              Book Title <p-sortIcon field="book.title" />
+            </th>
+            <th pSortableColumn="book.author">
+              Author <p-sortIcon field="book.author" />
+            </th>
+            <th *ngIf="isAdmin" pSortableColumn="user.name">
+              User <p-sortIcon field="user.name" />
+            </th>
+            <th pSortableColumn="issue_date">
+              Issue Date <p-sortIcon field="issue_date" />
+            </th>
+            <th pSortableColumn="due_date">
+              Due Date <p-sortIcon field="due_date" />
+            </th>
+            <th pSortableColumn="status">
+              Status <p-sortIcon field="status" />
+            </th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-loan>
+          <tr [class.bg-red-50]="isOverdue(loan)">
+            <td>
+              <div class="font-semibold">{{ loan.book?.title || 'N/A' }}</div>
+            </td>
+            <td>{{ loan.book?.author || 'N/A' }}</td>
+            <td *ngIf="isAdmin">{{ loan.user?.name || 'N/A' }}</td>
+            <td>{{ loan.issue_date | date: 'MMM dd, yyyy' }}</td>
+            <td>
+              <div>
+                {{ loan.due_date | date: 'MMM dd, yyyy' }}
+                <p-tag
+                  *ngIf="isOverdue(loan)"
+                  severity="danger"
+                  value="Overdue by {{ getDaysOverdue(loan) }} days"
+                  styleClass="ml-2"
+                />
+              </div>
+            </td>
+            <td>
+              <p-tag
+                [value]="loan.status"
+                [severity]="getStatusSeverity(loan.status)"
+              />
+            </td>
+            <td>
+              <div class="flex gap-2">
+                <button
+                  *ngIf="loan.status === 'ACTIVE'"
+                  pButton
+                  icon="pi pi-check"
+                  class="p-button-success p-button-sm"
+                  pTooltip="Return Book"
+                  tooltipPosition="top"
+                  (click)="returnBook(loan)"
+                ></button>
+                <button
+                  *ngIf="loan.status === 'ACTIVE' && !isOverdue(loan)"
+                  pButton
+                  icon="pi pi-calendar-plus"
+                  class="p-button-info p-button-sm"
+                  pTooltip="Extend Loan (7 days)"
+                  tooltipPosition="top"
+                  (click)="extendLoan(loan)"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="isAdmin ? 7 : 6" class="text-center py-8">
+              <div class="text-gray-500">
+                <i class="pi pi-inbox text-4xl mb-3"></i>
+                <p class="text-lg">No loans found</p>
+                <p class="text-sm">
+                  {{
+                    searchTerm || selectedStatus
+                      ? 'Try adjusting your filters'
+                      : 'Issue a book to get started'
+                  }}
+                </p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>

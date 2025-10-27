@@ -36,9 +36,10 @@ export const getAllBooksController = async (req, res, next) => {
   try {
     const books = await bookService.getAllBooks();
 
-    res.status(200).json(
-      books.map(formatBookResponse)
-    );
+    res.status(200).json({
+      data: books.map(formatBookResponse),
+      count: books.length
+    });
   } catch (err) {
     next(err);
   }
@@ -112,12 +113,13 @@ export const deleteBook = async (req, res, next) => {
 
 
 const formatBookResponse = (book) => ({
+  _id: book._id,
   id: book._id,
   title: book.title,
   author: book.author,
   isbn: book.isbn,
   copies: book.copies,
   available_copies: book.available_copies,
-  created_at: book.createdAt.toISOString(),
-  updated_at: book.updatedAt.toISOString()
+  createdAt: book.createdAt.toISOString(),
+  updatedAt: book.updatedAt.toISOString()
 });

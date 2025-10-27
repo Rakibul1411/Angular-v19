@@ -3,6 +3,7 @@ import {
   issueBook,
   returnBook,
   getUserLoans,
+  getAllLoans,
   getOverdueLoans,
   extendLoan,
   getPopularBooks,
@@ -15,6 +16,7 @@ const router = express.Router();
 
 router.post('/issueBook', authenticateToken, issueBook);
 router.post('/returns', authenticateToken, returnBook);
+router.get('/all', authenticateToken, requireRole('admin'), getAllLoans);
 router.get('/overdue', authenticateToken, requireRole('admin'), getOverdueLoans);
 
 router.get('/books/popular', authenticateToken, requireRole('admin'), getPopularBooks);

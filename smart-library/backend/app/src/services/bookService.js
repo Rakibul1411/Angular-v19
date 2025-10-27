@@ -161,7 +161,8 @@ export const deleteBookById = async (id) => {
 
 export const getBookStatistics = async () => {
   try {
-    const [totalBooks, availableBooks] = await Promise.all([
+    const [uniqueBooks, totalBooks, availableBooks] = await Promise.all([
+      Book.countDocuments(),
       Book.aggregate([
         { $group: { _id: null, total: { $sum: '$copies' } } }
       ]),
@@ -171,11 +172,12 @@ export const getBookStatistics = async () => {
     ]);
 
     return {
+      unique_books: uniqueBooks,
       total_books: totalBooks[0]?.total || 0,
       books_available: availableBooks[0]?.total || 0
     };
   } catch (error) {
     console.error("Error in getBookStatistics:", error);
-    return { total_books: 0, books_available: 0 };
+    return { unique_books: 0, total_books: 0, books_available: 0 };
   }
 };

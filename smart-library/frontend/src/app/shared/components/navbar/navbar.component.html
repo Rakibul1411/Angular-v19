@@ -1,0 +1,148 @@
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo and Brand -->
+      <div class="flex items-center cursor-pointer" [routerLink]="isLoggedIn ? getDashboardRoute() : '/auth/login'">
+        <i class="pi pi-book text-3xl text-blue-600 mr-3"></i>
+        <div class="flex flex-col">
+          <span class="text-xl font-bold text-gray-900">Smart Library</span>
+          <span class="text-xs text-gray-500">Management System</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Menu -->
+      <div class="hidden md:flex items-center space-x-4">
+        @if (!isLoggedIn) {
+          <!-- Guest Menu -->
+          <p-button
+            label="Login"
+            icon="pi pi-sign-in"
+            [text]="true"
+            (onClick)="router.navigate(['/auth/login'])"
+          ></p-button>
+          <p-button
+            label="Register"
+            icon="pi pi-user-plus"
+            (onClick)="router.navigate(['/auth/register'])"
+          ></p-button>
+        } @else {
+          <!-- Authenticated Menu -->
+          <p-button
+            label="Dashboard"
+            icon="pi pi-home"
+            [text]="true"
+            (onClick)="router.navigate([getDashboardRoute()])"
+          ></p-button>
+
+          <p-button
+            label="Books"
+            icon="pi pi-book"
+            [text]="true"
+            (onClick)="router.navigate(['/books'])"
+          ></p-button>
+
+          <p-button
+            label="Loans"
+            icon="pi pi-shopping-cart"
+            [text]="true"
+            (onClick)="router.navigate(['/loans'])"
+          ></p-button>
+
+          @if (currentUser?.role === 'admin') {
+            <p-button
+              label="Users"
+              icon="pi pi-users"
+              [text]="true"
+              (onClick)="router.navigate(['/users'])"
+            ></p-button>
+          }
+
+          <!-- User Profile Dropdown -->
+          <div class="flex items-center space-x-3 ml-4 border-l pl-4">
+            <div class="flex items-center cursor-pointer" (click)="navigateToProfile()">
+              <p-avatar
+                [label]="getUserInitial()"
+                shape="circle"
+                styleClass="bg-blue-600 text-white"
+              ></p-avatar>
+              <div class="ml-2 hidden lg:block">
+                <div class="text-sm font-medium text-gray-900">{{ currentUser?.name }}</div>
+                <div class="text-xs text-gray-500">{{ currentUser?.role }}</div>
+              </div>
+            </div>
+
+            <p-button
+              icon="pi pi-sign-out"
+              [text]="true"
+              [rounded]="true"
+              severity="danger"
+              pTooltip="Logout"
+              tooltipPosition="bottom"
+              (onClick)="logout()"
+            ></p-button>
+          </div>
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        @if (!isLoggedIn) {
+          <p-button
+            icon="pi pi-bars"
+            [text]="true"
+          ></p-button>
+        } @else {
+          <div class="flex items-center space-x-2">
+            <p-avatar
+              [label]="getUserInitial()"
+              shape="circle"
+              styleClass="bg-blue-600 text-white"
+            ></p-avatar>
+            <p-button
+              icon="pi pi-bars"
+              [text]="true"
+            ></p-button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Panel (Hidden by default) -->
+  <div class="md:hidden border-t border-gray-200 hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      @if (!isLoggedIn) {
+        <a [routerLink]="['/auth/login']" class="mobile-menu-item">
+          <i class="pi pi-sign-in mr-2"></i> Login
+        </a>
+        <a [routerLink]="['/auth/register']" class="mobile-menu-item">
+          <i class="pi pi-user-plus mr-2"></i> Register
+        </a>
+      } @else {
+        <a [routerLink]="[getDashboardRoute()]" class="mobile-menu-item">
+          <i class="pi pi-home mr-2"></i> Dashboard
+        </a>
+        <a [routerLink]="['/books']" class="mobile-menu-item">
+          <i class="pi pi-book mr-2"></i> Books
+        </a>
+        <a [routerLink]="['/loans']" class="mobile-menu-item">
+          <i class="pi pi-shopping-cart mr-2"></i> My Loans
+        </a>
+        <a [routerLink]="['/loans/issue']" class="mobile-menu-item">
+          <i class="pi pi-plus mr-2"></i> Issue Book
+        </a>
+        @if (currentUser?.role === 'admin') {
+          <a [routerLink]="['/users']" class="mobile-menu-item">
+            <i class="pi pi-users mr-2"></i> Users
+          </a>
+        }
+        <a [routerLink]="['/users/profile']" class="mobile-menu-item">
+          <i class="pi pi-user mr-2"></i> Profile
+        </a>
+        <a (click)="logout()" class="mobile-menu-item text-red-600">
+          <i class="pi pi-sign-out mr-2"></i> Logout
+        </a>
+      }
+    </div>
+  </div>
+</nav>

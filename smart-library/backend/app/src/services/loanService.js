@@ -95,6 +95,7 @@ const formatSystemOverview = (
   returns_today
 ) => {
   return {
+    unique_books: books_stats.unique_books,
     total_books: books_stats.total_books,
     total_users,
     books_available: books_stats.books_available,
@@ -200,6 +201,59 @@ export const getUserLoans = async (user_id) => {
     };
   } catch (error) {
     console.error("Error in getUserLoans:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllLoans = async () => {
+  try {
+    const loans = await Loan.find().sort('-issue_date');
+
+    if (!loans.length) {
+      return {
+        success: true,
+        data: []
+      };
+    }
+
+    const loansWithDetails = await Promise.all(
+      loans.map(async loan => {
+        try {
+          const [book, user] = await Promise.all([
+            bookServiceExternal.findBookById(loan.book),
+            userServiceExternal.findUserById(loan.user)
+          ]);
+          
+          return {
+            id: loan._id,
+            book: {
+              id: book?._id || loan.book,
+              title: book?.title || "Unknown",
+              author: book?.author || "Unknown"
+            },
+            user: {
+              id: user?._id || loan.user,
+              name: user?.name || "Unknown",
+              email: user?.email || "Unknown"
+            },
+            issue_date: loan.issue_date,
+            due_date: loan.due_date,
+            return_date: loan.return_date || null,
+            status: loan.status
+          };
+        } catch (err) {
+          console.error(`Error fetching details for loan ${loan._id}:`, err);
+          return formatLoanWithBook(loan, null);
+        }
+      })
+    );
+
+    return {
+      success: true,
+      data: loansWithDetails
+    };
+  } catch (error) {
+    console.error("Error in getAllLoans:", error);
     return { success: false, error: error.message };
   }
 };

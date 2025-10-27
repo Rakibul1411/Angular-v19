@@ -1,0 +1,189 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p class="text-gray-600 mt-1">Welcome back, {{ currentUser?.name }}!</p>
+        </div>
+        <p-button
+          label="Logout"
+          icon="pi pi-sign-out"
+          severity="danger"
+          (onClick)="logout()"
+        ></p-button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <!-- Unique Books Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Unique Books</div>
+            <div class="text-3xl font-bold text-gray-900">
+              {{ systemOverview?.unique_books || 0 }}
+            </div>
+            <div class="text-xs text-gray-500 mt-2">
+              Total copies: {{ systemOverview?.total_books || 0 }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-lg">
+            <i class="pi pi-book text-blue-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="View Books"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            styleClass="p-0"
+            (onClick)="navigateToBooks()"
+          ></p-button>
+        </div>
+      </p-card>
+
+      <!-- Total Users Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Total Users</div>
+            <div class="text-3xl font-bold text-gray-900">
+              {{ systemOverview?.total_users || 0 }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-lg">
+            <i class="pi pi-users text-green-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="View Users"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            styleClass="p-0"
+            (onClick)="navigateToUsers()"
+          ></p-button>
+        </div>
+      </p-card>
+
+      <!-- Books Borrowed Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Books Borrowed</div>
+            <div class="text-3xl font-bold text-gray-900">
+              {{ systemOverview?.books_borrowed || 0 }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-cyan-100 rounded-lg">
+            <i class="pi pi-shopping-cart text-cyan-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="View Loans"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            styleClass="p-0"
+            (onClick)="navigateToLoans()"
+          ></p-button>
+        </div>
+      </p-card>
+
+      <!-- Overdue Loans Card -->
+      <p-card styleClass="shadow-sm">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-500 mb-1">Overdue Loans</div>
+            <div class="text-3xl font-bold text-red-600">
+              {{ systemOverview?.overdue_loans || 0 }}
+            </div>
+          </div>
+          <div class="w-12 h-12 flex items-center justify-center bg-red-100 rounded-lg">
+            <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-100">
+          <p-button
+            label="View Overdue"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+            severity="danger"
+            styleClass="p-0"
+            (onClick)="navigateToOverdueLoans()"
+          ></p-button>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-6">
+      <p-card header="Quick Actions" styleClass="shadow-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <p-button
+            label="Manage Books"
+            icon="pi pi-book"
+            styleClass="w-full"
+            severity="info"
+            (onClick)="navigateToBooks()"
+          ></p-button>
+          <p-button
+            label="Manage Users"
+            icon="pi pi-users"
+            styleClass="w-full"
+            severity="success"
+            (onClick)="navigateToUsers()"
+          ></p-button>
+          <p-button
+            label="View All Loans"
+            icon="pi pi-list"
+            styleClass="w-full"
+            severity="help"
+            (onClick)="navigateToLoans()"
+          ></p-button>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Today's Activity -->
+    <div>
+      <p-card header="Today's Activity" styleClass="shadow-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full">
+              <i class="pi pi-arrow-up text-green-600 text-xl"></i>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Loans Today</div>
+              <div class="text-2xl font-bold text-gray-900">
+                {{ systemOverview?.loans_today || 0 }}
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full">
+              <i class="pi pi-arrow-down text-blue-600 text-xl"></i>
+            </div>
+            <div>
+              <div class="text-sm text-gray-500">Returns Today</div>
+              <div class="text-2xl font-bold text-gray-900">
+                {{ systemOverview?.returns_today || 0 }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

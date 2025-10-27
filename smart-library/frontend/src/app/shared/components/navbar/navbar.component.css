@@ -1,0 +1,37 @@
+/* Navbar styles */
+.dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.mobile-menu-item {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.mobile-menu-item:hover {
+  color: #111827;
+  background-color: #f9fafb;
+}
+
+.dropdown-menu {
+  display: none;
+}
+
+.dropdown-trigger:hover + .dropdown-menu,
+.dropdown-menu:hover {
+  display: block;
+}
+

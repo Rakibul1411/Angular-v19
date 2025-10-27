@@ -1,15 +1,180 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./out-tsc/app",
-    "types": []
-  },
-  "files": [
-    "src/main.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ]
-}
+frontend/
+├── .angular/                          # Angular cache (auto-generated)
+├── .vscode/                           # VS Code settings
+├── public/                            # Static assets
+│   ├── favicon.ico
+│   └── images/
+├── src/
+│   ├── index.html                     # Main HTML file
+│   ├── main.ts                        # Application entry point
+│   ├── styles.css                     # Global styles
+│   │
+│   ├── app/
+│   │   ├── app.component.ts           # Root component
+│   │   ├── app.component.html
+│   │   ├── app.component.css
+│   │   ├── app.config.ts              # App configuration (HTTP, routing, etc.)
+│   │   ├── app.routes.ts              # Root routes configuration
+│   │   │
+│   │   ├── core/                      # Singleton services & app-wide utilities
+│   │   │   ├── guards/
+│   │   │   │   ├── auth.guard.ts      # Protects routes requiring authentication
+│   │   │   │   └── role.guard.ts      # Protects routes by user role
+│   │   │   │
+│   │   │   ├── interceptors/
+│   │   │   │   └── auth.interceptor.ts # Adds JWT token to requests
+│   │   │   │
+│   │   │   ├── models/
+│   │   │   │   ├── user.model.ts      # User interface & types
+│   │   │   │   ├── book.model.ts      # Book interface & types
+│   │   │   │   ├── loan.model.ts      # Loan interface & types
+│   │   │   │   └── api-response.model.ts # Common API response types
+│   │   │   │
+│   │   │   └── services/
+│   │   │       ├── auth.service.ts    # Authentication & token management
+│   │   │       ├── user.service.ts    # User CRUD operations
+│   │   │       ├── book.service.ts    # Book CRUD operations
+│   │   │       └── loan.service.ts    # Loan operations
+│   │   │
+│   │   ├── shared/                    # Reusable components, directives, pipes
+│   │   │   ├── components/
+│   │   │   │   ├── navbar/
+│   │   │   │   │   ├── navbar.component.ts
+│   │   │   │   │   ├── navbar.component.html
+│   │   │   │   │   └── navbar.component.css
+│   │   │   │   │
+│   │   │   │   ├── footer/
+│   │   │   │   │   ├── footer.component.ts
+│   │   │   │   │   ├── footer.component.html
+│   │   │   │   │   └── footer.component.css
+│   │   │   │   │
+│   │   │   │   ├── loading-spinner/
+│   │   │   │   │   ├── loading-spinner.component.ts
+│   │   │   │   │   ├── loading-spinner.component.html
+│   │   │   │   │   └── loading-spinner.component.css
+│   │   │   │   │
+│   │   │   │   └── confirmation-dialog/
+│   │   │   │       ├── confirmation-dialog.component.ts
+│   │   │   │       ├── confirmation-dialog.component.html
+│   │   │   │       └── confirmation-dialog.component.css
+│   │   │   │
+│   │   │   ├── pipes/
+│   │   │   │   ├── date-format.pipe.ts
+│   │   │   │   └── loan-status.pipe.ts
+│   │   │   │
+│   │   │   └── directives/
+│   │   │       └── has-role.directive.ts # Show/hide based on user role
+│   │   │
+│   │   ├── layout/                    # Layout components
+│   │   │   ├── main-layout/
+│   │   │   │   ├── main-layout.component.ts
+│   │   │   │   ├── main-layout.component.html
+│   │   │   │   └── main-layout.component.css
+│   │   │   │
+│   │   │   └── admin-layout/
+│   │   │       ├── admin-layout.component.ts
+│   │   │       ├── admin-layout.component.html
+│   │   │       └── admin-layout.component.css
+│   │   │
+│   │   └── features/                  # Feature modules (lazy-loaded)
+│   │       │
+│   │       ├── auth/                  # Authentication feature
+│   │       │   ├── auth.routes.ts
+│   │       │   │
+│   │       │   ├── login/
+│   │       │   │   ├── login.component.ts
+│   │       │   │   ├── login.component.html
+│   │       │   │   └── login.component.css
+│   │       │   │
+│   │       │   └── register/
+│   │       │       ├── register.component.ts
+│   │       │       ├── register.component.html
+│   │       │       └── register.component.css
+│   │       │
+│   │       ├── dashboard/             # Dashboard feature
+│   │       │   ├── dashboard.routes.ts
+│   │       │   │
+│   │       │   ├── student-dashboard/
+│   │       │   │   ├── student-dashboard.component.ts
+│   │       │   │   ├── student-dashboard.component.html
+│   │       │   │   └── student-dashboard.component.css
+│   │       │   │
+│   │       │   ├── faculty-dashboard/
+│   │       │   │   ├── faculty-dashboard.component.ts
+│   │       │   │   ├── faculty-dashboard.component.html
+│   │       │   │   └── faculty-dashboard.component.css
+│   │       │   │
+│   │       │   └── admin-dashboard/
+│   │       │       ├── admin-dashboard.component.ts
+│   │       │       ├── admin-dashboard.component.html
+│   │       │       └── admin-dashboard.component.css
+│   │       │
+│   │       ├── users/                 # User management feature
+│   │       │   ├── users.routes.ts
+│   │       │   │
+│   │       │   ├── user-list/
+│   │       │   │   ├── user-list.component.ts
+│   │       │   │   ├── user-list.component.html
+│   │       │   │   └── user-list.component.css
+│   │       │   │
+│   │       │   └── user-profile/
+│   │       │       ├── user-profile.component.ts
+│   │       │       ├── user-profile.component.html
+│   │       │       └── user-profile.component.css
+│   │       │
+│   │       ├── books/                 # Book management feature
+│   │       │   ├── books.routes.ts
+│   │       │   │
+│   │       │   ├── book-list/
+│   │       │   │   ├── book-list.component.ts
+│   │       │   │   ├── book-list.component.html
+│   │       │   │   └── book-list.component.css
+│   │       │   │
+│   │       │   ├── book-detail/
+│   │       │   │   ├── book-detail.component.ts
+│   │       │   │   ├── book-detail.component.html
+│   │       │   │   └── book-detail.component.css
+│   │       │   │
+│   │       │   └── book-form/         # Add/Edit book (admin only)
+│   │       │       ├── book-form.component.ts
+│   │       │       ├── book-form.component.html
+│   │       │       └── book-form.component.css
+│   │       │
+│   │       └── loans/                 # Loan management feature
+│   │           ├── loans.routes.ts
+│   │           │
+│   │           ├── loan-list/         # User's active loans
+│   │           │   ├── loan-list.component.ts
+│   │           │   ├── loan-list.component.html
+│   │           │   └── loan-list.component.css
+│   │           │
+│   │           ├── loan-issue/        # Issue new loan
+│   │           │   ├── loan-issue.component.ts
+│   │           │   ├── loan-issue.component.html
+│   │           │   └── loan-issue.component.css
+│   │           │
+│   │           ├── loan-history/      # Past loans
+│   │           │   ├── loan-history.component.ts
+│   │           │   ├── loan-history.component.html
+│   │           │   └── loan-history.component.css
+│   │           │
+│   │           └── overdue-loans/     # Admin: view overdue loans
+│   │               ├── overdue-loans.component.ts
+│   │               ├── overdue-loans.component.html
+│   │               └── overdue-loans.component.css
+│   │
+│   ├── assets/                        # Images, fonts, etc.
+│   │   ├── images/
+│   │   ├── icons/
+│   │   └── fonts/
+│   │
+│   └── environments/                  # Environment configurations
+│       ├── environment.ts             # Development
+│       └── environment.prod.ts        # Production
+│
+├── angular.json                       # Angular CLI configuration
+├── package.json                       # Dependencies
+├── tsconfig.json                      # TypeScript configuration
+├── tsconfig.app.json
+├── tsconfig.spec.json
+└── README.md

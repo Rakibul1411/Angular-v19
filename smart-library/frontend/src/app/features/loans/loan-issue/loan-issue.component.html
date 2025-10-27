@@ -1,0 +1,175 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <p-toast />
+
+  <div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6 flex items-center gap-4">
+      <button
+        pButton
+        icon="pi pi-arrow-left"
+        class="p-button-text p-button-secondary"
+        (click)="goBack()"
+        pTooltip="Back to Loans"
+        tooltipPosition="bottom"
+        aria-label="Back to loans"
+      ></button>
+      <h1 class="text-3xl font-bold text-gray-800">Issue Book</h1>
+    </div>
+
+    <!-- Issue Form Card -->
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="p-4 border-b">
+          <h2 class="text-xl font-semibold text-gray-700">
+            <i class="pi pi-book mr-2"></i>Book Issue Form
+          </h2>
+        </div>
+      </ng-template>
+
+      <form [formGroup]="issueForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- User Selection (Admin Only) -->
+        <div *ngIf="isAdmin" class="flex flex-col gap-2">
+          <label for="user_id" class="font-semibold text-gray-700">
+            Select User <span class="text-red-500">*</span>
+          </label>
+          <p-select
+            id="user_id"
+            formControlName="user_id"
+            [options]="users"
+            optionLabel="name"
+            optionValue="_id"
+            placeholder="Select a user"
+            [filter]="true"
+            filterBy="name,email"
+            [showClear]="true"
+            [style]="{ width: '100%' }"
+          >
+            <ng-template let-user pTemplate="item">
+              <div class="flex flex-col">
+                <span class="font-semibold">{{ user.name }}</span>
+                <span class="text-sm text-gray-500">{{ user.email }}</span>
+              </div>
+            </ng-template>
+          </p-select>
+          <small
+            *ngIf="issueForm.get('user_id')?.invalid && issueForm.get('user_id')?.touched"
+            class="text-red-500"
+          >
+            User is required
+          </small>
+        </div>
+
+        <!-- Book Selection -->
+        <div class="flex flex-col gap-2">
+          <label for="book_id" class="font-semibold text-gray-700">
+            Select Book <span class="text-red-500">*</span>
+          </label>
+          <p-select
+            id="book_id"
+            formControlName="book_id"
+            [options]="books"
+            optionLabel="title"
+            optionValue="_id"
+            placeholder="Select a book"
+            [filter]="true"
+            filterBy="title,author"
+            [showClear]="true"
+            [style]="{ width: '100%' }"
+          >
+            <ng-template let-book pTemplate="item">
+              <div class="flex flex-col">
+                <span class="font-semibold">{{ book.title }}</span>
+                <span class="text-sm text-gray-500">
+                  by {{ book.author }} • {{ book.available_copies || 0 }} available
+                </span>
+              </div>
+            </ng-template>
+          </p-select>
+          <small
+            *ngIf="issueForm.get('book_id')?.invalid && issueForm.get('book_id')?.touched"
+            class="text-red-500"
+          >
+            Book is required
+          </small>
+          <small class="text-gray-500">
+            <i class="pi pi-info-circle mr-1"></i>
+            Only books with available copies are shown
+          </small>
+        </div>
+
+        <!-- Due Date -->
+        <div class="flex flex-col gap-2">
+          <label for="due_date" class="font-semibold text-gray-700">
+            Due Date <span class="text-red-500">*</span>
+          </label>
+          <p-datepicker
+            id="due_date"
+            formControlName="due_date"
+            [minDate]="minDate"
+            [showIcon]="true"
+            dateFormat="M dd, yy"
+            placeholder="Select due date"
+            [style]="{ width: '100%' }"
+          />
+          <small
+            *ngIf="issueForm.get('due_date')?.invalid && issueForm.get('due_date')?.touched"
+            class="text-red-500"
+          >
+            Due date is required
+          </small>
+          <small class="text-gray-500">
+            <i class="pi pi-info-circle mr-1"></i>
+            Default loan period is 14 days
+          </small>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 pt-4">
+          <button
+            pButton
+            type="submit"
+            label="Issue Book"
+            icon="pi pi-check"
+            [loading]="loading"
+            [disabled]="loading"
+            class="flex-1"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Cancel"
+            icon="pi pi-times"
+            class="p-button-secondary flex-1"
+            (click)="goBack()"
+            [disabled]="loading"
+          ></button>
+        </div>
+      </form>
+    </p-card>
+
+    <!-- Info Card -->
+    <p-card class="mt-6">
+      <div class="space-y-3 text-gray-700">
+        <h3 class="font-semibold text-lg mb-3">
+          <i class="pi pi-info-circle mr-2"></i>Information
+        </h3>
+        <div class="flex items-start gap-2">
+          <i class="pi pi-check-circle text-green-500 mt-1"></i>
+          <p>Standard loan period is 14 days, but you can customize it</p>
+        </div>
+        <div class="flex items-start gap-2">
+          <i class="pi pi-check-circle text-green-500 mt-1"></i>
+          <p>You can extend the loan period later if needed</p>
+        </div>
+        <div class="flex items-start gap-2">
+          <i class="pi pi-check-circle text-green-500 mt-1"></i>
+          <p>Return books on time to avoid overdue penalties</p>
+        </div>
+        <div *ngIf="!isAdmin" class="flex items-start gap-2">
+          <i class="pi pi-check-circle text-green-500 mt-1"></i>
+          <p>Books are issued to your account automatically</p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

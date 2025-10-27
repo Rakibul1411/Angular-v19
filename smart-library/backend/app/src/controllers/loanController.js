@@ -76,9 +76,23 @@ export const getUserLoans = async (req, res, next) => {
     const currentUser = req.user;
     if (!currentUser) return res.status(401).json({ error: 'Authentication required' });
 
+    // Debug logging
+    console.log('getUserLoans - currentUser.id:', currentUser.id, 'type:', typeof currentUser.id);
+    console.log('getUserLoans - user_id from params:', user_id, 'type:', typeof user_id);
+    console.log('getUserLoans - currentUser.role:', currentUser.role);
+
     // Allow only the user themselves or admin
-    if (currentUser.id !== user_id && currentUser.role !== 'admin') {
-      return res.status(403).json({ success: false, error: 'Not authorized to view these loans' });
+    // Convert both to strings for comparison
+    if (String(currentUser.id) !== String(user_id) && currentUser.role !== 'admin') {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'Not authorized to view these loans',
+        debug: {
+          currentUserId: currentUser.id,
+          requestedUserId: user_id,
+          role: currentUser.role
+        }
+      });
     }
 
     const serviceResult = await loanService.getUserLoans(user_id);
@@ -87,6 +101,29 @@ export const getUserLoans = async (req, res, next) => {
       return res.status(404).json({ 
         success: false, 
         error: serviceResult.error 
+      });
+    }
+
+    return res.status(200).json(serviceResult.data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Get all loans (admin only)
+export const getAllLoans = async (req, res, next) => {
+  try {
+    const currentUser = req.user;
+    if (!currentUser || currentUser.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+
+    const serviceResult = await loanService.getAllLoans();
+    
+    if (!serviceResult.success) {
+      return res.status(500).json({
+        success: false,
+        error: serviceResult.error
       });
     }
 

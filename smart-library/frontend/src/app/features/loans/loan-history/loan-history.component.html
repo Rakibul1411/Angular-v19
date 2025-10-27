@@ -1,0 +1,215 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <p-toast />
+
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <button
+          pButton
+          icon="pi pi-arrow-left"
+          class="p-button-text p-button-secondary"
+          (click)="goBack()"
+          pTooltip="Back to Dashboard"
+          tooltipPosition="bottom"
+          aria-label="Back to dashboard"
+        ></button>
+        <h1 class="text-3xl font-bold text-gray-800">Loan History</h1>
+      </div>
+      <button
+        pButton
+        label="Export"
+        icon="pi pi-download"
+        class="p-button-outlined"
+        (click)="exportHistory()"
+      ></button>
+    </div>
+
+    <!-- Filters Card -->
+    <p-card class="mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Search
+          </label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-search"></i>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onSearchChange()"
+              placeholder="Search by book or author..."
+              class="w-full"
+            />
+          </span>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Status
+          </label>
+          <p-select
+            [(ngModel)]="selectedStatus"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="onStatusFilterChange()"
+            [style]="{ width: '100%' }"
+            placeholder="All Status"
+          />
+        </div>
+
+        <!-- Date From -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            From Date
+          </label>
+          <p-datepicker
+            [(ngModel)]="dateFrom"
+            (onSelect)="onDateFilterChange()"
+            (onClear)="onDateFilterChange()"
+            [showIcon]="true"
+            [showClear]="true"
+            dateFormat="M dd, yy"
+            placeholder="Select start date"
+            [style]="{ width: '100%' }"
+          />
+        </div>
+
+        <!-- Date To -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            To Date
+          </label>
+          <p-datepicker
+            [(ngModel)]="dateTo"
+            (onSelect)="onDateFilterChange()"
+            (onClear)="onDateFilterChange()"
+            [showIcon]="true"
+            [showClear]="true"
+            dateFormat="M dd, yy"
+            placeholder="Select end date"
+            [style]="{ width: '100%' }"
+          />
+        </div>
+      </div>
+
+      <div class="mt-4 flex justify-end">
+        <button
+          pButton
+          label="Clear Filters"
+          icon="pi pi-filter-slash"
+          class="p-button-outlined p-button-sm"
+          (click)="clearFilters()"
+        ></button>
+      </div>
+    </p-card>
+
+    <!-- History Table -->
+    <p-card>
+      <p-table
+        [value]="filteredLoans"
+        [loading]="loading"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+        [rowsPerPageOptions]="[10, 25, 50, 100]"
+        styleClass="p-datatable-sm"
+        [tableStyle]="{ 'min-width': '60rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="book.title">
+              Book Title <p-sortIcon field="book.title" />
+            </th>
+            <th pSortableColumn="book.author">
+              Author <p-sortIcon field="book.author" />
+            </th>
+            <th *ngIf="isAdmin" pSortableColumn="user.name">
+              User <p-sortIcon field="user.name" />
+            </th>
+            <th pSortableColumn="issue_date">
+              Issue Date <p-sortIcon field="issue_date" />
+            </th>
+            <th pSortableColumn="due_date">
+              Due Date <p-sortIcon field="due_date" />
+            </th>
+            <th pSortableColumn="return_date">
+              Return Date <p-sortIcon field="return_date" />
+            </th>
+            <th>Duration</th>
+            <th pSortableColumn="status">
+              Status <p-sortIcon field="status" />
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-loan>
+          <tr [class.bg-red-50]="isOverdue(loan)">
+            <td>
+              <div class="font-semibold">{{ loan.book?.title || 'N/A' }}</div>
+            </td>
+            <td>{{ loan.book?.author || 'N/A' }}</td>
+            <td *ngIf="isAdmin">{{ loan.user?.name || 'N/A' }}</td>
+            <td>{{ loan.issue_date | date: 'MMM dd, yyyy' }}</td>
+            <td>
+              <div>
+                {{ loan.due_date | date: 'MMM dd, yyyy' }}
+                <p-tag
+                  *ngIf="isOverdue(loan)"
+                  severity="danger"
+                  value="Overdue"
+                  styleClass="ml-2"
+                />
+              </div>
+            </td>
+            <td>
+              <span *ngIf="loan.return_date; else notReturned">
+                {{ loan.return_date | date: 'MMM dd, yyyy' }}
+              </span>
+              <ng-template #notReturned>
+                <span class="text-gray-400">Not returned</span>
+              </ng-template>
+            </td>
+            <td>
+              <span *ngIf="loan.status === 'RETURNED'">
+                {{ getLoanDuration(loan) }} days
+              </span>
+              <span *ngIf="loan.status === 'ACTIVE'" class="text-blue-600">
+                {{ getLoanDuration(loan) }} days (ongoing)
+              </span>
+            </td>
+            <td>
+              <p-tag
+                [value]="loan.status"
+                [severity]="getStatusSeverity(loan.status)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="isAdmin ? 8 : 7" class="text-center py-8">
+              <div class="text-gray-500">
+                <i class="pi pi-history text-4xl mb-3"></i>
+                <p class="text-lg">No loan history found</p>
+                <p class="text-sm">
+                  {{
+                    searchTerm || selectedStatus || dateFrom || dateTo
+                      ? 'Try adjusting your filters'
+                      : 'Your loan history will appear here'
+                  }}
+                </p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>
