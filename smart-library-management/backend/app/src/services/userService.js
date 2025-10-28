@@ -38,7 +38,9 @@ export const createUser = async (userData) => {
     password: hashedPassword,
   });
 
-  return await user.save();
+  const savedUser = await user.save();
+  
+  return await User.findById(savedUser._id).select('-password');
 };
 
 

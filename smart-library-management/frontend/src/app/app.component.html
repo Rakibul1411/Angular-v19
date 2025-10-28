@@ -1,0 +1,16 @@
+<div class="flex flex-col min-h-screen">
+  <!-- Static Header for all pages (except auth pages) -->
+  @if (showLayout()) {
+    <app-header />
+  }
+
+  <!-- Dynamic Content Area -->
+  <div class="flex-1">
+    <router-outlet />
+  </div>
+
+  <!-- Static Footer for all pages (except auth pages) -->
+  @if (showLayout()) {
+    <app-footer />
+  }
+</div>

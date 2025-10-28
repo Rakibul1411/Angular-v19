@@ -1,0 +1,37 @@
+/* Custom styles for Student Dashboard */
+
+/* Card hover effects */
+::ng-deep .p-card {
+  transition: all 0.3s ease;
+}
+
+/* Menu styling */
+::ng-deep .p-menu {
+  min-width: 200px;
+}
+
+/* Avatar styling */
+::ng-deep .p-avatar {
+  font-weight: 600;
+}
+
+/* Tag styling */
+::ng-deep .p-tag {
+  font-weight: 600;
+}
+
+/* Smooth animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,65 @@
+/* Custom styles for PrimeNG components integration with Tailwind */
+
+/* Override PrimeNG password input to be full width */
+::ng-deep p-password {
+  width: 100%;
+}
+
+::ng-deep p-password .p-password {
+  width: 100%;
+}
+
+::ng-deep p-password .p-inputtext {
+  width: 100%;
+}
+
+/* Override PrimeNG select to be full width */
+::ng-deep p-select {
+  width: 100%;
+}
+
+::ng-deep p-select .p-select {
+  width: 100%;
+}
+
+/* Card styling adjustments */
+::ng-deep .p-card {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+::ng-deep .p-card .p-card-body {
+  padding: 0;
+}
+
+/* Message styling */
+::ng-deep .p-message {
+  border-radius: 0.5rem;
+}
+
+/* Button hover effect */
+::ng-deep .p-button {
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Smooth animations */
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

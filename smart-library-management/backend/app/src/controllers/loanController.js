@@ -1,7 +1,7 @@
 import { loanService } from '../services/index.js';
 
 
-export const issueBook = async (req, res, next) => {
+export const issueLoan = async (req, res, next) => {
   try {
     const currentUser = req.user;
 
@@ -33,7 +33,7 @@ export const issueBook = async (req, res, next) => {
 
 
 
-export const returnBook = async (req, res, next) => {
+export const returnLoan = async (req, res, next) => {
   try {
     const currentUser = req.user;
 

@@ -1,0 +1,383 @@
+<div class="bg-gray-100 min-h-full">
+  <p-toast />
+
+  <!-- Main Content -->
+  <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl">
+    <!-- Edit Button (Admin Only, when not editing and not new book) -->
+    @if (!isLoading() && !isNewBook() && isAdmin() && !isEditing()) {
+      <div class="mb-6 flex justify-end">
+        <p-button
+          label="Edit Book"
+          icon="pi pi-pencil"
+          (onClick)="toggleEdit()"
+          [outlined]="true"
+          severity="secondary"
+        />
+      </div>
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Book Preview Card -->
+      <div class="lg:col-span-1">
+        <p-card>
+          @if (isLoading()) {
+            <div class="flex flex-col items-center gap-4 py-6">
+              <p-skeleton width="100%" height="300px" />
+              <p-skeleton width="10rem" height="1.5rem" />
+              <p-skeleton width="12rem" />
+            </div>
+          } @else {
+            <div class="flex flex-col items-center gap-4 py-6">
+              <!-- Cover Image -->
+              <div class="w-full max-w-[200px]">
+                @if (book()?.coverImage || bookForm.get('coverImage')?.value) {
+                  <img
+                    [src]="book()?.coverImage || bookForm.get('coverImage')?.value"
+                    [alt]="'Cover of ' + (book()?.title || 'book')"
+                    [title]="book()?.title || 'Book cover'"
+                    class="w-full h-auto rounded shadow-lg"
+                  />
+                } @else {
+                  <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center rounded shadow">
+                    <i class="pi pi-book text-6xl text-gray-400"></i>
+                  </div>
+                }
+              </div>
+
+              @if (!isNewBook() && book()) {
+                <!-- Title -->
+                <h2 class="text-2xl font-bold text-gray-800 text-center">{{ book()!.title }}</h2>
+
+                <!-- Author -->
+                <p class="text-lg text-gray-600 text-center">by {{ book()!.author }}</p>
+
+                <!-- Availability Badge -->
+                <p-tag
+                  [value]="book()!.availableCopies + ' of ' + book()!.totalCopies + ' available'"
+                  [severity]="getAvailabilitySeverity(book()!.availableCopies)"
+                  styleClass="text-lg"
+                />
+
+                <!-- Divider -->
+                <p-divider />
+
+                <!-- Quick Info -->
+                <div class="w-full space-y-3">
+                  @if (book()!.isbn) {
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm text-gray-600">ISBN</span>
+                      <span class="text-sm font-semibold text-gray-800">{{ book()!.isbn }}</span>
+                    </div>
+                  }
+                  @if (book()!.publishedYear) {
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm text-gray-600">Published</span>
+                      <span class="text-sm font-semibold text-gray-800">{{ book()!.publishedYear }}</span>
+                    </div>
+                  }
+                  @if (book()!.category) {
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm text-gray-600">Category</span>
+                      <p-tag [value]="book()!.category" severity="info" />
+                    </div>
+                  }
+                  @if (book()!.shelfLocation) {
+                    <div class="flex justify-between items-center">
+                      <span class="text-sm text-gray-600">Location</span>
+                      <span class="text-sm font-semibold text-gray-800">{{ book()!.shelfLocation }}</span>
+                    </div>
+                  }
+                </div>
+
+                <!-- Timestamps -->
+                @if (book()!.createdAt) {
+                  <p-divider />
+                  <div class="w-full space-y-2 text-xs text-gray-500">
+                    <div class="flex justify-between">
+                      <span>Added:</span>
+                      <span>{{ formatDate(book()!.createdAt) }}</span>
+                    </div>
+                    @if (book()!.updatedAt) {
+                      <div class="flex justify-between">
+                        <span>Updated:</span>
+                        <span>{{ formatDate(book()!.updatedAt) }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          }
+        </p-card>
+      </div>
+
+      <!-- Book Details Form -->
+      <div class="lg:col-span-2">
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="px-6 pt-6">
+              <h3 class="text-xl font-bold text-gray-800">
+                @if (isNewBook()) {
+                  Book Information
+                } @else if (isEditing()) {
+                  Edit Book Information
+                } @else {
+                  Book Details
+                }
+              </h3>
+              <p class="text-sm text-gray-600">
+                @if (isEditing()) {
+                  Update book details and save changes
+                } @else {
+                  View complete book information
+                }
+              </p>
+            </div>
+          </ng-template>
+
+          @if (isLoading()) {
+            <div class="space-y-4 p-6">
+              @for (i of [1,2,3,4,5,6]; track i) {
+                <div>
+                  <p-skeleton width="6rem" height="1rem" styleClass="mb-2" />
+                  <p-skeleton width="100%" height="2.5rem" />
+                </div>
+              }
+            </div>
+          } @else {
+            <form [formGroup]="bookForm" class="p-6">
+              <div class="space-y-6">
+
+                <!-- Title Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="title" class="text-sm font-semibold text-gray-700">
+                    Book Title <span class="text-red-600">*</span>
+                  </label>
+                  <input
+                    pInputText
+                    id="title"
+                    formControlName="title"
+                    placeholder="Enter book title"
+                    class="w-full"
+                    [disabled]="!isEditing()"
+                    [class.ng-invalid]="isFieldInvalid('title')"
+                    [class.ng-dirty]="isFieldInvalid('title')"
+                  />
+                  @if (hasError('title', 'required')) {
+                    <small class="text-red-600">Title is required</small>
+                  }
+                  @if (hasError('title', 'minlength')) {
+                    <small class="text-red-600">Title must be at least 2 characters</small>
+                  }
+                </div>
+
+                <!-- Author Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="author" class="text-sm font-semibold text-gray-700">
+                    Author <span class="text-red-600">*</span>
+                  </label>
+                  <input
+                    pInputText
+                    id="author"
+                    formControlName="author"
+                    placeholder="Enter author name"
+                    class="w-full"
+                    [disabled]="!isEditing()"
+                    [class.ng-invalid]="isFieldInvalid('author')"
+                    [class.ng-dirty]="isFieldInvalid('author')"
+                  />
+                  @if (hasError('author', 'required')) {
+                    <small class="text-red-600">Author is required</small>
+                  }
+                  @if (hasError('author', 'minlength')) {
+                    <small class="text-red-600">Author must be at least 2 characters</small>
+                  }
+                </div>
+
+                <!-- ISBN Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="isbn" class="text-sm font-semibold text-gray-700">
+                    ISBN <span class="text-red-600">*</span>
+                  </label>
+                  <input
+                    pInputText
+                    id="isbn"
+                    formControlName="isbn"
+                    placeholder="Enter ISBN (10 or 13 digits)"
+                    class="w-full"
+                    [disabled]="!isEditing()"
+                    [class.ng-invalid]="isFieldInvalid('isbn')"
+                    [class.ng-dirty]="isFieldInvalid('isbn')"
+                  />
+                  @if (hasError('isbn', 'required')) {
+                    <small class="text-red-600">ISBN is required</small>
+                  }
+                  @if (hasError('isbn', 'pattern')) {
+                    <small class="text-red-600">ISBN must be 10 or 13 digits</small>
+                  }
+                </div>
+
+                <!-- Publisher and Year Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Publisher -->
+                  <div class="flex flex-col gap-2">
+                    <label for="publisher" class="text-sm font-semibold text-gray-700">Publisher</label>
+                    <input
+                      pInputText
+                      id="publisher"
+                      formControlName="publisher"
+                      placeholder="Enter publisher"
+                      class="w-full"
+                      [disabled]="!isEditing()"
+                    />
+                  </div>
+
+                  <!-- Published Year -->
+                  <div class="flex flex-col gap-2">
+                    <label for="publishedYear" class="text-sm font-semibold text-gray-700">Published Year</label>
+                    <p-inputNumber
+                      formControlName="publishedYear"
+                      [useGrouping]="false"
+                      placeholder="Enter year"
+                      styleClass="w-full"
+                      [disabled]="!isEditing()"
+                      [class.ng-invalid]="isFieldInvalid('publishedYear')"
+                      [class.ng-dirty]="isFieldInvalid('publishedYear')"
+                    />
+                    @if (hasError('publishedYear', 'min') || hasError('publishedYear', 'max')) {
+                      <small class="text-red-600">Enter a valid year</small>
+                    }
+                  </div>
+                </div>
+
+                <!-- Category Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="category" class="text-sm font-semibold text-gray-700">Category</label>
+                  <p-select
+                    formControlName="category"
+                    [options]="categoryOptions"
+                    placeholder="Select a category"
+                    styleClass="w-full"
+                    [disabled]="!isEditing()"
+                  />
+                </div>
+
+                <!-- Description Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="description" class="text-sm font-semibold text-gray-700">Description</label>
+                  <textarea
+                    pInputTextarea
+                    id="description"
+                    formControlName="description"
+                    placeholder="Enter book description"
+                    rows="4"
+                    class="w-full"
+                    [disabled]="!isEditing()"
+                  ></textarea>
+                </div>
+
+                <!-- Copies Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Total Copies -->
+                  <div class="flex flex-col gap-2">
+                    <label for="totalCopies" class="text-sm font-semibold text-gray-700">
+                      Total Copies <span class="text-red-600">*</span>
+                    </label>
+                    <p-inputNumber
+                      formControlName="totalCopies"
+                      [min]="1"
+                      [useGrouping]="false"
+                      placeholder="Enter total copies"
+                      styleClass="w-full"
+                      [disabled]="!isEditing()"
+                      [class.ng-invalid]="isFieldInvalid('totalCopies')"
+                      [class.ng-dirty]="isFieldInvalid('totalCopies')"
+                    />
+                    @if (hasError('totalCopies', 'required')) {
+                      <small class="text-red-600">Total copies is required</small>
+                    }
+                    @if (hasError('totalCopies', 'min')) {
+                      <small class="text-red-600">Must be at least 1</small>
+                    }
+                  </div>
+
+                  <!-- Available Copies -->
+                  <div class="flex flex-col gap-2">
+                    <label for="availableCopies" class="text-sm font-semibold text-gray-700">Available Copies</label>
+                    <p-inputNumber
+                      formControlName="availableCopies"
+                      [min]="0"
+                      [useGrouping]="false"
+                      placeholder="Available copies"
+                      styleClass="w-full"
+                      [disabled]="!isEditing() || isNewBook()"
+                      [class.ng-invalid]="isFieldInvalid('availableCopies')"
+                      [class.ng-dirty]="isFieldInvalid('availableCopies')"
+                    />
+                    @if (isNewBook()) {
+                      <small class="text-gray-500">Will be set automatically to total copies</small>
+                    }
+                    @if (hasError('availableCopies', 'min')) {
+                      <small class="text-red-600">Cannot be negative</small>
+                    }
+                  </div>
+                </div>
+
+                <!-- Shelf Location Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="shelfLocation" class="text-sm font-semibold text-gray-700">Shelf Location</label>
+                  <input
+                    pInputText
+                    id="shelfLocation"
+                    formControlName="shelfLocation"
+                    placeholder="e.g., A-12, B-5"
+                    class="w-full"
+                    [disabled]="!isEditing()"
+                  />
+                </div>
+
+                <!-- Cover Image URL Field -->
+                <div class="flex flex-col gap-2">
+                  <label for="coverImage" class="text-sm font-semibold text-gray-700">Cover Image URL</label>
+                  <input
+                    pInputText
+                    id="coverImage"
+                    formControlName="coverImage"
+                    placeholder="Enter image URL"
+                    class="w-full"
+                    [disabled]="!isEditing()"
+                  />
+                  <small class="text-gray-500">Enter a direct URL to the book cover image</small>
+                </div>
+
+                <!-- Action Buttons (Only show when editing) -->
+                @if (isEditing()) {
+                  <div class="flex gap-3 pt-4 border-t border-gray-200">
+                    <p-button
+                      [label]="isNewBook() ? 'Create Book' : 'Save Changes'"
+                      icon="pi pi-check"
+                      (onClick)="saveBook()"
+                      [loading]="isSaving()"
+                      [disabled]="!bookForm.valid || isSaving()"
+                      styleClass="flex-1"
+                    />
+                    <p-button
+                      label="Cancel"
+                      icon="pi pi-times"
+                      (onClick)="isNewBook() ? cancelNewBook() : toggleEdit()"
+                      [outlined]="true"
+                      severity="secondary"
+                      [disabled]="isSaving()"
+                      styleClass="flex-1"
+                    />
+                  </div>
+                }
+              </div>
+            </form>
+          }
+        </p-card>
+      </div>
+    </div>
+  </main>
+</div>

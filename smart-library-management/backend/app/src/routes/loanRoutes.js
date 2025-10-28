@@ -1,7 +1,7 @@
 import express from 'express';
 import {
-  issueBook,
-  returnBook,
+  issueLoan,
+  returnLoan,
   getUserLoans,
   getAllLoans,
   getOverdueLoans,
@@ -19,15 +19,15 @@ import {
 const router = express.Router();
 
 // Admin-only routes
-router.get('/all', authenticateToken, requireAdmin, getAllLoans);
-router.get('/overdue', authenticateToken, requireAdmin, getOverdueLoans);
+router.get('/allLoans', authenticateToken, requireAdmin, getAllLoans);
+router.get('/overdueLoans', authenticateToken, requireAdmin, getOverdueLoans);
 router.get('/books/popular', authenticateToken, requireAdmin, getPopularBooks);
 router.get('/users/active', authenticateToken, requireAdmin, getActiveUsers);
 router.get('/overview', authenticateToken, requireAdmin, getSystemOverview);
 
 // Authenticated user routes
-router.post('/issueBook', authenticateToken, issueBook);
-router.post('/returns', authenticateToken, returnBook);
+router.post('/issueLoan', authenticateToken, issueLoan);
+router.post('/returnLoan', authenticateToken, returnLoan);
 
 // Self or admin routes
 router.get('/:user_id', authenticateToken, requireSelfOrAdmin('user_id'), getUserLoans);
