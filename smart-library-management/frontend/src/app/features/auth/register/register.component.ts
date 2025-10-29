@@ -93,7 +93,7 @@ export class RegisterComponent {
         error: (error) => {
           this.isLoading.set(false);
           this.errorMessage.set(
-            error.error?.message || 'Registration failed. Please try again.'
+            error.userMessage || 'Registration failed. Please try again.'
           );
         }
       });

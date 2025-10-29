@@ -72,12 +72,13 @@ export class UserListComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (error) => {
-        this.errorMessage.set('Failed to load users');
+        const message = error.userMessage || 'Failed to load users';
+        this.errorMessage.set(message);
         this.isLoading.set(false);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load users'
+          detail: message
         });
       }
     });
@@ -115,7 +116,7 @@ export class UserListComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to delete user'
+              detail: error.userMessage || 'Failed to delete user'
             });
           }
         });

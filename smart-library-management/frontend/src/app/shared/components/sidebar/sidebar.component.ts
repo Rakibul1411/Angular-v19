@@ -14,7 +14,7 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
@@ -39,16 +39,15 @@ export class SidebarComponent {
       return [
         { label: 'Dashboard', icon: 'fas fa-tachometer-alt', route: '/app/dashboard' },
         { label: 'All Users', icon: 'fas fa-users', route: '/app/admin/users' },
-        { label: 'All Books', icon: 'fas fa-book', route: '/app/admin/books' },
-        { label: 'All Loans', icon: 'fas fa-exchange-alt', route: '/app/admin/loans' },
-        { label: 'My Profile', icon: 'fas fa-user-circle', route: '/app/admin/profile' }
+        { label: 'Add Books', icon: 'fas fa-plus-circle', route: '/app/admin/books/add' },
+        { label: 'All Books', icon: 'fas fa-book', route: '/app/books' },
+        { label: 'My Profile', icon: 'fas fa-user-circle', route: '/app/profile' }
       ];
     } else if (role === UserRole.STUDENT) {
       return [
         { label: 'Dashboard', icon: 'fas fa-tachometer-alt', route: '/app/dashboard' },
-        { label: 'All Books', icon: 'fas fa-book', route: '/app/student/books' },
-        { label: 'My Loans', icon: 'fas fa-bookmark', route: '/app/student/loans' },
-        { label: 'My Profile', icon: 'fas fa-user', route: '/app/student/profile' }
+        { label: 'All Books', icon: 'fas fa-book', route: '/app/books' },
+        { label: 'My Profile', icon: 'fas fa-user', route: '/app/profile' }
       ];
     } else {
       return [];

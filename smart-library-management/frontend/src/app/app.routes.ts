@@ -31,6 +31,20 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
 
+      // Shared routes (accessible by both admin and student)
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/users/my-profile/my-profile.component').then(m => m.MyProfileComponent)
+      },
+      {
+        path: 'books',
+        loadComponent: () => import('./features/books/book-list/book-list.component').then(m => m.BookListComponent)
+      },
+      {
+        path: 'books/:id',
+        loadComponent: () => import('./features/books/book-details/book-details.component').then(m => m.BookDetailsComponent)
+      },
+
       // Admin-only routes
       {
         path: 'admin',
@@ -46,41 +60,8 @@ export const routes: Routes = [
             loadComponent: () => import('./features/users/user-details/user-details.component').then(m => m.UserDetailsComponent)
           },
           {
-            path: 'profile',
-            loadComponent: () => import('./features/users/my-profile/my-profile.component').then(m => m.MyProfileComponent)
-          },
-          {
-            path: 'books',
-            loadComponent: () => import('./features/books/book-list/book-list.component').then(m => m.BookListComponent)
-          },
-          {
             path: 'books/add',
             loadComponent: () => import('./features/books/add-book/add-book.component').then(m => m.AddBookComponent)
-          },
-          {
-            path: 'books/:id',
-            loadComponent: () => import('./features/books/book-details/book-details.component').then(m => m.BookDetailsComponent)
-          }
-        ]
-      },
-
-      // Student-only routes
-      {
-        path: 'student',
-        canActivate: [roleGuard],
-        data: { role: UserRole.STUDENT },
-        children: [
-          {
-            path: 'profile',
-            loadComponent: () => import('./features/users/my-profile/my-profile.component').then(m => m.MyProfileComponent)
-          },
-          {
-            path: 'books',
-            loadComponent: () => import('./features/books/book-list/book-list.component').then(m => m.BookListComponent)
-          },
-          {
-            path: 'books/:id',
-            loadComponent: () => import('./features/books/book-details/book-details.component').then(m => m.BookDetailsComponent)
           }
         ]
       }

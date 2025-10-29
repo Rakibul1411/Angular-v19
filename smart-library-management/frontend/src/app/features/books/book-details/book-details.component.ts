@@ -140,7 +140,7 @@ export class BookDetailsComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error?.error || 'Failed to update book'
+            detail: error.userMessage || 'Failed to update book'
           });
         }
       });
@@ -171,7 +171,7 @@ export class BookDetailsComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to delete book'
+              detail: error.userMessage || 'Failed to delete book'
             });
           }
         });
@@ -180,11 +180,7 @@ export class BookDetailsComponent implements OnInit {
   }
 
   goBack() {
-    if (this.isAdmin()) {
-      this.router.navigate(['/app/admin/books']);
-    } else {
-      this.router.navigate(['/app/student/books']);
-    }
+    this.router.navigate(['/app/books']);
   }
 
   getAvailabilityPercentage(): number {

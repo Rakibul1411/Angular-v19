@@ -57,7 +57,7 @@ export class AddBookComponent {
             detail: 'Book added successfully'
           });
           setTimeout(() => {
-            this.router.navigate(['/app/admin/books']);
+            this.router.navigate(['/app/books']);
           }, 1500);
         },
         error: (error) => {
@@ -65,7 +65,7 @@ export class AddBookComponent {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error?.error || 'Failed to add book'
+            detail: error.userMessage || 'Failed to add book'
           });
         }
       });
@@ -73,6 +73,6 @@ export class AddBookComponent {
   }
 
   goBack() {
-    this.router.navigate(['/app/admin/books']);
+    this.router.navigate(['/app/books']);
   }
 }

@@ -77,12 +77,13 @@ export class BookListComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: (error) => {
-        this.errorMessage.set('Failed to load books');
+        const message = error.userMessage || 'Failed to load books';
+        this.errorMessage.set(message);
         this.isLoading.set(false);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load books'
+          detail: message
         });
       }
     });
@@ -93,16 +94,12 @@ export class BookListComponent implements OnInit {
   }
 
   viewBookDetails(bookId: string) {
-    if (this.isAdmin()) {
-      this.router.navigate(['/app/admin/books', bookId]);
-    } else {
-      this.router.navigate(['/app/student/books', bookId]);
-    }
+    this.router.navigate(['/app/books', bookId]);
   }
 
   editBook(event: Event, bookId: string) {
     event.stopPropagation();
-    this.router.navigate(['/app/admin/books', bookId], {
+    this.router.navigate(['/app/books', bookId], {
       queryParams: { mode: 'edit' }
     });
   }
@@ -128,7 +125,7 @@ export class BookListComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to delete book'
+              detail: error.userMessage || 'Failed to delete book'
             });
           }
         });

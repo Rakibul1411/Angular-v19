@@ -94,7 +94,7 @@ export class UserDetailsComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load user details'
+          detail: error.userMessage || 'Failed to load user details'
         });
         this.isLoading.set(false);
       }
@@ -142,7 +142,7 @@ export class UserDetailsComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error?.error || 'Failed to update user'
+            detail: error.userMessage || 'Failed to update user'
           });
         }
       });
@@ -173,7 +173,7 @@ export class UserDetailsComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to delete user'
+              detail: error.userMessage || 'Failed to delete user'
             });
           }
         });
