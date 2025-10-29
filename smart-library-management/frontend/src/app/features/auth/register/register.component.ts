@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { CreateUserDto } from '../../../core/models/user.model';
+import { CreateUserDto, UserRole } from '../../../core/models/user.model';
 
 // PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
@@ -40,25 +40,27 @@ export class RegisterComponent {
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
 
-  // Role options for PrimeNG Select
   roleOptions = [
-    { label: 'Student', value: 'student' },
-    { label: 'Admin', value: 'admin' }
+    { label: 'Student', value: UserRole.STUDENT },
+    { label: 'Admin', value: UserRole.ADMIN }
   ];
 
   constructor() {
-    this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(5)]],
-      confirmPassword: ['', [Validators.required]],
-      role: ['student', [Validators.required]]
-    }, {
-      validators: this.passwordMatchValidator
-    });
+    this.registerForm = this.fb.group(
+      {
+        name: ['', [Validators.required, Validators.minLength(3)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(5)]],
+        confirmPassword: ['', [Validators.required]],
+        role: ['', [Validators.required]]
+      },
+      {
+        validators: this.passwordMatchValidator
+      }
+    );
   }
 
-  // Custom validator to check if passwords match
+
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');

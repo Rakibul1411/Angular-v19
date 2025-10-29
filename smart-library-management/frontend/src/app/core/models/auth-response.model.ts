@@ -1,5 +1,4 @@
-import { CreateUserDto } from './user.model';
-
+import { UserRole } from "./user.model";
 
 export interface LoginRequest {
   email: string;
@@ -15,7 +14,7 @@ export interface LoginResponse {
     id: string;
     name: string;
     email: string;
-    role: 'student' | 'admin';
+    role: UserRole;
   };
 }
 
@@ -24,7 +23,7 @@ export interface RegisterResponse {
   _id: string;
   name: string;
   email: string;
-  role: 'student' | 'admin';
+  role: UserRole;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -41,7 +40,7 @@ export interface RefreshTokenResponse {
     id: string;
     name: string;
     email: string;
-    role: 'student' | 'admin';
+    role: UserRole;
   };
 }
 

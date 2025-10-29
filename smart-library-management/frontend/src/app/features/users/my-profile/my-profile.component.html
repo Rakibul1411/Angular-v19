@@ -5,26 +5,17 @@
       <i class="pi pi-spin pi-spinner text-4xl text-blue-600"></i>
     </div>
 
-    <!-- User Details -->
+    <!-- Profile Details -->
     <div *ngIf="!isLoading() && user()" class="bg-white rounded-lg shadow-lg">
       <!-- Header -->
       <div class="p-6 border-b border-gray-200">
         <div class="flex justify-between items-center">
           <div>
-            <h2 class="text-2xl font-bold text-gray-800">User Details</h2>
+            <h2 class="text-2xl font-bold text-gray-800">My Profile</h2>
             <p class="text-sm text-gray-500 mt-1">
-              {{ isEditMode() ? 'Edit user information' : 'View user information' }}
+              {{ isEditMode() ? 'Edit your profile information' : 'View your profile information' }}
             </p>
           </div>
-          <button
-            pButton
-            type="button"
-            icon="pi pi-arrow-left"
-            label="Back"
-            class="p-button-text p-button-secondary"
-            (click)="goBack()"
-            aria-label="Go back to user list">
-          </button>
         </div>
       </div>
 
@@ -69,32 +60,23 @@
           </div>
         </div>
 
-        <!-- Action Buttons (View Mode) -->
+        <!-- Update Button -->
         <div class="flex gap-3 mt-8 pt-6 border-t border-gray-200">
           <button
             pButton
             type="button"
             icon="pi pi-pencil"
-            label="Edit User"
+            label="Update Profile"
             class="p-button-primary"
             (click)="toggleEditMode()"
-            aria-label="Edit user details">
-          </button>
-          <button
-            pButton
-            type="button"
-            icon="pi pi-trash"
-            label="Delete User"
-            class="p-button-danger"
-            (click)="deleteUser()"
-            aria-label="Delete user">
+            aria-label="Update profile">
           </button>
         </div>
       </div>
 
       <!-- Edit Mode -->
       <div *ngIf="isEditMode()" class="p-6">
-        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Name Field -->
             <div class="flex flex-col gap-2">
@@ -109,10 +91,10 @@
                 placeholder="Enter full name"
                 class="w-full"
                 [ngClass]="{
-                  'border-red-500': userForm.get('name')?.invalid && userForm.get('name')?.touched
+                  'border-red-500': profileForm.get('name')?.invalid && profileForm.get('name')?.touched
                 }" />
               <small
-                *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched"
+                *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
                 class="text-red-500">
                 Name is required (min 3 characters)
               </small>
@@ -131,29 +113,13 @@
                 placeholder="Enter email"
                 class="w-full"
                 [ngClass]="{
-                  'border-red-500': userForm.get('email')?.invalid && userForm.get('email')?.touched
+                  'border-red-500': profileForm.get('email')?.invalid && profileForm.get('email')?.touched
                 }" />
               <small
-                *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+                *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
                 class="text-red-500">
                 Valid email is required
               </small>
-            </div>
-
-            <!-- Role Field -->
-            <div class="flex flex-col gap-2">
-              <label for="role" class="block text-sm font-medium text-gray-700">
-                Role <span class="text-red-500">*</span>
-              </label>
-              <p-select
-                id="role"
-                formControlName="role"
-                [options]="roleOptions"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Select role"
-                class="w-full">
-              </p-select>
             </div>
           </div>
 
@@ -165,9 +131,9 @@
               icon="pi pi-check"
               label="Save Changes"
               class="p-button-success"
-              [disabled]="userForm.invalid || isSaving()"
+              [disabled]="profileForm.invalid || isSaving()"
               [loading]="isSaving()"
-              aria-label="Save user changes">
+              aria-label="Save profile changes">
             </button>
             <button
               pButton
@@ -179,16 +145,6 @@
               [disabled]="isSaving()"
               aria-label="Cancel editing">
             </button>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-trash"
-              label="Delete User"
-              class="p-button-danger ml-auto"
-              (click)="deleteUser()"
-              [disabled]="isSaving()"
-              aria-label="Delete user">
-            </button>
           </div>
         </form>
       </div>
@@ -198,6 +154,3 @@
 
 <!-- Toast Notifications -->
 <p-toast position="top-right" />
-
-<!-- Confirmation Dialog -->
-<p-confirmDialog />

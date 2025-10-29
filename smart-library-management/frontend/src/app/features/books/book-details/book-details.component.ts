@@ -3,63 +3,58 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
-import { UserService } from '../../../core/services/user.service';
-import { User, UserRole, getUserInitials } from '../../../core/models/user.model';
+import { BookService } from '../../../core/services/book.service';
+import { Book } from '../../../core/models/book.model';
+import { UserRole } from '../../../core/models/user.model';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
-  selector: 'app-user-details',
+  selector: 'app-book-details',
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
-    SelectModule,
+    InputNumberModule,
     CardModule,
     ToastModule,
     ConfirmDialogModule
   ],
   providers: [ConfirmationService, MessageService],
-  templateUrl: './user-details.component.html',
-  styleUrl: './user-details.component.css'
+  templateUrl: './book-details.component.html',
+  styleUrl: './book-details.component.css'
 })
-export class UserDetailsComponent implements OnInit {
+export class BookDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private userService = inject(UserService);
+  private bookService = inject(BookService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
 
   currentUser = this.authService.currentUser;
-  user = signal<User | null>(null);
+  book = signal<Book | null>(null);
   isLoading = signal(false);
   isEditMode = signal(false);
   isSaving = signal(false);
 
-  // Import utility function
-  getUserInitials = getUserInitials;
-
-  userForm: FormGroup;
-
-  roleOptions = [
-    { label: 'Student', value: UserRole.STUDENT },
-    { label: 'Admin', value: UserRole.ADMIN }
-  ];
+  bookForm: FormGroup;
 
   constructor() {
-    this.userForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      role: ['', [Validators.required]]
+    this.bookForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(2)]],
+      author: ['', [Validators.required, Validators.minLength(2)]],
+      isbn: ['', [Validators.required]],
+      copies: [1, [Validators.required, Validators.min(1)]],
+      available_copies: [1, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -70,23 +65,24 @@ export class UserDetailsComponent implements OnInit {
       }
     });
 
-    const userId = this.route.snapshot.paramMap.get('id');
-
-    if (userId) {
-      this.loadUserById(userId);
+    const bookId = this.route.snapshot.paramMap.get('id');
+    if (bookId) {
+      this.loadBookById(bookId);
     }
   }
 
-  loadUserById(userId: string) {
+  loadBookById(bookId: string) {
     this.isLoading.set(true);
 
-    this.userService.getUserById(userId).subscribe({
-      next: (user) => {
-        this.user.set(user);
-        this.userForm.patchValue({
-          name: user.name,
-          email: user.email,
-          role: user.role
+    this.bookService.getBookById(bookId).subscribe({
+      next: (book) => {
+        this.book.set(book);
+        this.bookForm.patchValue({
+          title: book.title,
+          author: book.author,
+          isbn: book.isbn,
+          copies: book.copies,
+          available_copies: book.available_copies
         });
         this.isLoading.set(false);
       },
@@ -94,7 +90,7 @@ export class UserDetailsComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to load user details'
+          detail: 'Failed to load book details'
         });
         this.isLoading.set(false);
       }
@@ -108,33 +104,35 @@ export class UserDetailsComponent implements OnInit {
   toggleEditMode() {
     this.isEditMode.update(mode => !mode);
     if (!this.isEditMode()) {
-      const user = this.user();
-      if (user) {
-        this.userForm.patchValue({
-          name: user.name,
-          email: user.email,
-          role: user.role
+      const book = this.book();
+      if (book) {
+        this.bookForm.patchValue({
+          title: book.title,
+          author: book.author,
+          isbn: book.isbn,
+          copies: book.copies,
+          available_copies: book.available_copies
         });
       }
     }
   }
 
   onSubmit() {
-    if (this.userForm.valid) {
+    if (this.bookForm.valid) {
       this.isSaving.set(true);
-      const userId = this.user()?._id;
+      const bookId = this.book()?._id;
 
-      if (!userId) return;
+      if (!bookId) return;
 
-      this.userService.updateUser(userId, this.userForm.value).subscribe({
+      this.bookService.updateBook(bookId, this.bookForm.value).subscribe({
         next: (response) => {
-          this.user.set(response.data);
+          this.book.set(response);
           this.isEditMode.set(false);
           this.isSaving.set(false);
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'User updated successfully'
+            detail: 'Book updated successfully'
           });
         },
         error: (error) => {
@@ -142,38 +140,38 @@ export class UserDetailsComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: error.error?.error || 'Failed to update user'
+            detail: error.error?.error || 'Failed to update book'
           });
         }
       });
     }
   }
 
-  deleteUser() {
-    const user = this.user();
-    if (!user) return;
+  deleteBook() {
+    const book = this.book();
+    if (!book) return;
 
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${user.name}?`,
+      message: `Are you sure you want to delete "${book.title}"?`,
       header: 'Delete Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.userService.deleteUser(user._id).subscribe({
+        this.bookService.deleteBook(book._id!).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
-              detail: 'User deleted successfully'
+              detail: 'Book deleted successfully'
             });
             setTimeout(() => {
-              this.router.navigate(['/app/admin/users']);
+              this.goBack();
             }, 1500);
           },
           error: (error) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to delete user'
+              detail: 'Failed to delete book'
             });
           }
         });
@@ -182,12 +180,23 @@ export class UserDetailsComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/app/admin/users']);
+    if (this.isAdmin()) {
+      this.router.navigate(['/app/admin/books']);
+    } else {
+      this.router.navigate(['/app/student/books']);
+    }
   }
 
-  getRoleBadgeClass(role: string): string {
-    return role === UserRole.ADMIN
-      ? 'bg-purple-100 text-purple-800'
-      : 'bg-blue-100 text-blue-800';
+  getAvailabilityPercentage(): number {
+    const book = this.book();
+    if (!book) return 0;
+    return (book.available_copies / book.copies) * 100;
+  }
+
+  getAvailabilityClass(): string {
+    const percentage = this.getAvailabilityPercentage();
+    if (percentage === 0) return 'text-red-600';
+    if (percentage < 30) return 'text-orange-600';
+    return 'text-green-600';
   }
 }

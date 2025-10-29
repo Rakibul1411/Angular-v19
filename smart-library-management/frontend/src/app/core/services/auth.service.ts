@@ -4,14 +4,15 @@ import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { StorageService } from './storage.service';
-import { CreateUserDto } from '../models/user.model';
+import { CreateUserDto, UserRole } from '../models/user.model';
 import {
   LoginRequest,
   LoginResponse,
   RegisterResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
-  LogoutRequest
+  LogoutRequest,
+  LogoutResponse
 } from '../models/auth-response.model';
 
 @Injectable({
@@ -28,8 +29,8 @@ export class AuthService {
 
   currentUser = this.currentUserSignal.asReadonly();
   isLoggedIn = computed(() => !!this.currentUserSignal());
-  isAdmin = computed(() => this.currentUserSignal()?.role === 'admin');
-  isStudent = computed(() => this.currentUserSignal()?.role === 'student');
+  isAdmin = computed(() => this.currentUserSignal()?.role === UserRole.ADMIN);
+  isStudent = computed(() => this.currentUserSignal()?.role === UserRole.STUDENT);
 
   constructor() {
     this.loadUserFromStorage();
@@ -46,7 +47,6 @@ export class AuthService {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, userData)
       .pipe(
         catchError(error => {
-          console.error('Registration failed:', error);
           return throwError(() => error);
         })
       );
@@ -62,7 +62,6 @@ export class AuthService {
           this.currentUserSignal.set(response.user);
         }),
         catchError(error => {
-          console.error('Login failed:', error);
           return throwError(() => error);
         })
       );
@@ -85,24 +84,22 @@ export class AuthService {
           this.currentUserSignal.set(response.user);
         }),
         catchError(error => {
-          console.error('Token refresh failed:', error);
           this.logout();
           return throwError(() => error);
         })
       );
   }
 
-  logout(): Observable<void> {
+  logout(): Observable<LogoutResponse | void> {
     const refreshToken = this.storage.getRefreshToken();
 
     if (refreshToken) {
       const request: LogoutRequest = { refreshToken };
-      return this.http.post<void>(`${this.apiUrl}/logout`, request).pipe(
+      return this.http.post<LogoutResponse>(`${this.apiUrl}/logout`, request).pipe(
         tap(() => {
           this.clearSession();
         }),
         catchError(error => {
-          console.error('Logout failed:', error);
           this.clearSession();
           return throwError(() => error);
         })
@@ -127,7 +124,7 @@ export class AuthService {
     return this.storage.getAccessToken();
   }
 
-  hasRole(role: 'admin' | 'student'): boolean {
+  hasRole(role: UserRole): boolean {
     return this.currentUserSignal()?.role === role;
   }
 }

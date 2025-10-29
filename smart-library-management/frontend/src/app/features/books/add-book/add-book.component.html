@@ -1,0 +1,144 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="bg-white rounded-lg shadow-lg">
+      <!-- Header -->
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">Add New Book</h2>
+            <p class="text-sm text-gray-500 mt-1">Enter book information to add to the library</p>
+          </div>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-arrow-left"
+            label="Back"
+            class="p-button-text p-button-secondary"
+            (click)="goBack()"
+            aria-label="Go back to book list">
+          </button>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="p-6">
+        <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Title Field -->
+            <div class="flex flex-col gap-2 md:col-span-2">
+              <label for="title" class="block text-sm font-medium text-gray-700">
+                Book Title <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="title"
+                type="text"
+                pInputText
+                formControlName="title"
+                placeholder="Enter book title"
+                class="w-full"
+                [ngClass]="{
+                  'border-red-500': bookForm.get('title')?.invalid && bookForm.get('title')?.touched
+                }" />
+              <small
+                *ngIf="bookForm.get('title')?.invalid && bookForm.get('title')?.touched"
+                class="text-red-500">
+                Title is required (minimum 2 characters)
+              </small>
+            </div>
+
+            <!-- Author Field -->
+            <div class="flex flex-col gap-2">
+              <label for="author" class="block text-sm font-medium text-gray-700">
+                Author <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="author"
+                type="text"
+                pInputText
+                formControlName="author"
+                placeholder="Enter author name"
+                class="w-full"
+                [ngClass]="{
+                  'border-red-500': bookForm.get('author')?.invalid && bookForm.get('author')?.touched
+                }" />
+              <small
+                *ngIf="bookForm.get('author')?.invalid && bookForm.get('author')?.touched"
+                class="text-red-500">
+                Author is required (minimum 2 characters)
+              </small>
+            </div>
+
+            <!-- ISBN Field -->
+            <div class="flex flex-col gap-2">
+              <label for="isbn" class="block text-sm font-medium text-gray-700">
+                ISBN <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="isbn"
+                type="text"
+                pInputText
+                formControlName="isbn"
+                placeholder="Enter ISBN number"
+                class="w-full"
+                [ngClass]="{
+                  'border-red-500': bookForm.get('isbn')?.invalid && bookForm.get('isbn')?.touched
+                }" />
+              <small
+                *ngIf="bookForm.get('isbn')?.invalid && bookForm.get('isbn')?.touched"
+                class="text-red-500">
+                ISBN is required
+              </small>
+            </div>
+
+            <!-- Copies Field -->
+            <div class="flex flex-col gap-2">
+              <label for="copies" class="block text-sm font-medium text-gray-700">
+                Number of Copies <span class="text-red-500">*</span>
+              </label>
+              <p-inputNumber
+                id="copies"
+                formControlName="copies"
+                [min]="1"
+                [showButtons]="true"
+                placeholder="Enter number of copies"
+                class="w-full">
+              </p-inputNumber>
+              <small
+                *ngIf="bookForm.get('copies')?.invalid && bookForm.get('copies')?.touched"
+                class="text-red-500">
+                At least 1 copy is required
+              </small>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3 mt-8 pt-6 border-t border-gray-200">
+            <button
+              pButton
+              type="submit"
+              icon="pi pi-check"
+              label="Add Book"
+              class="p-button-success"
+              [disabled]="bookForm.invalid || isSaving()"
+              [loading]="isSaving()"
+              aria-label="Add book">
+            </button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-times"
+              label="Cancel"
+              class="p-button-secondary"
+              (click)="goBack()"
+              [disabled]="isSaving()"
+              aria-label="Cancel">
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notifications -->
+<p-toast position="top-right" />

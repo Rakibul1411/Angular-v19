@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/models/auth-response.model';
+import { UserRole } from '../../../core/models/user.model';
 
 // PrimeNG Imports
 import { InputTextModule } from 'primeng/inputtext';
@@ -42,10 +43,8 @@ export class LoginComponent {
   returnUrl: string = '/';
 
   constructor() {
-    // Get return URL from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-    // Initialize the login form
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(5)]],
@@ -65,16 +64,10 @@ export class LoginComponent {
         next: (response) => {
           this.isLoading.set(false);
 
-          // Navigate based on user role and return URL
-          if (this.returnUrl && this.returnUrl !== '/') {
+          if (this.returnUrl && this.returnUrl !== '/' && this.returnUrl !== '/login') {
             this.router.navigateByUrl(this.returnUrl);
           } else {
-            // Default navigation based on role
-            if (response.user.role === 'admin') {
-              this.router.navigate(['/admin/dashboard']);
-            } else {
-              this.router.navigate(['/student/dashboard']);
-            }
+            this.router.navigate(['/app/dashboard']);
           }
         },
         error: (error) => {
@@ -85,7 +78,6 @@ export class LoginComponent {
         }
       });
     } else {
-      // Mark all fields as touched to show validation errors
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
       });

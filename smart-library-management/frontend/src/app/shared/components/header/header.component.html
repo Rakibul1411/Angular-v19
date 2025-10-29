@@ -1,44 +1,24 @@
-<header class="bg-white border-b border-gray-200 px-8 py-4">
-  <div class="flex items-center justify-between">
-    <!-- Search Bar -->
-    <div class="flex-1 max-w-2xl">
-      <span class="p-input-icon-left w-full">
-        <i class="pi pi-search text-gray-400"></i>
-        <input
-          type="text"
-          pInputText
-          placeholder="Search Ex. ISBN, Title, Author, Member, etc"
-          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </span>
-    </div>
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-16 bg-slate-800 text-white shadow-lg">
+  <div class="flex items-center gap-4">
+    <button
+      class="flex flex-col gap-1 p-2 rounded-md hover:bg-white/10 transition-colors"
+      (click)="toggleSidebar.emit()"
+      aria-label="Toggle sidebar">
+      <span class="block w-6 h-0.5 bg-white rounded-sm transition-all"></span>
+      <span class="block w-6 h-0.5 bg-white rounded-sm transition-all"></span>
+      <span class="block w-6 h-0.5 bg-white rounded-sm transition-all"></span>
+    </button>
+    <h1 class="text-xl md:text-2xl font-semibold text-white">Smart Library</h1>
+  </div>
 
-    <!-- Right Side Actions -->
-    <div class="flex items-center gap-4 ml-6">
-      <!-- Date Filter -->
-      <button class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-        <i class="pi pi-calendar"></i>
-        <span class="text-sm">Last 6 months</span>
-        <i class="pi pi-chevron-down text-xs"></i>
-      </button>
-
-      <!-- Notifications -->
-      <button class="relative p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" title="Notifications">
-        <i class="pi pi-bell text-xl"></i>
-        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-      </button>
-
-      <!-- User Profile -->
-      <button class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors" (click)="userMenu.toggle($event)" #userMenuButton>
-        <div class="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
-          <div class="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-            {{ userInitials() }}
-          </div>
+  <div class="flex items-center">
+    @if (currentUser()) {
+      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer">
+        <div class="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center font-semibold text-sm text-white">
+          {{ getUserInitials(currentUser()!.name) }}
         </div>
-        <span class="text-sm font-medium text-gray-700">{{ userName() }}</span>
-        <i class="pi pi-chevron-down text-xs text-gray-500"></i>
-      </button>
-      <p-menu #userMenu [model]="userMenuItems" [popup]="true" />
-    </div>
+        <span class="hidden md:block font-medium text-white">{{ currentUser()!.name }}</span>
+      </div>
+    }
   </div>
 </header>

@@ -23,7 +23,7 @@ export const getBooks = async (req, res, next) => {
   try {
     const { search, title, author } = req.query;
     const books = await bookService.searchBooks(search, title, author);
-    
+    console.log(books);
     res.status(200).json( books );
   } catch (err) {
     next(err);

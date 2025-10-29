@@ -1,9 +1,8 @@
 export interface User {
-  _id?: string;
-  id?: string;
+  _id: string;
+  id: string;
   name: string;
   email: string;
-  password?: string;
   role: UserRole;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -21,7 +20,6 @@ export interface CreateUserDto {
 export interface UpdateUserDto {
   name?: string;
   email?: string;
-  password?: string;
   role?: UserRole;
 }
 
@@ -36,26 +34,27 @@ export interface UpdateUserResponse {
   data: User;
 }
 
-/**
- * User role enum
- */
+export interface DeleteUserResponse {
+  message: string;
+  deletedUser: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
 export enum UserRole {
   STUDENT = 'student',
   ADMIN = 'admin'
 }
 
-
-export function getUserId(user: User): string | undefined {
-  return user._id || user.id;
-}
-
-
+// Utility function to get user initials
 export function getUserInitials(name: string): string {
   return name
     .split(' ')
-    .map(n => n.charAt(0))
+    .map(word => word.charAt(0))
     .join('')
     .toUpperCase()
-    .substring(0, 2);
+    .slice(0, 2);
 }
 

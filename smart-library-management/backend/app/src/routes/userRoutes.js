@@ -3,6 +3,7 @@ import {
   registerUser,
   getUserById,
   updateUser,
+  deleteUser,
   findByRole,
   getAllUsersController,
   loginUserController,
@@ -26,6 +27,7 @@ router.post('/logout', logoutController);
 // Admin-only routes
 router.get('/role', authenticateToken, requireAdmin, findByRole);
 router.get('/all', authenticateToken, requireAdmin, getAllUsersController);
+router.delete('/:id', authenticateToken, requireAdmin, deleteUser);
 
 // Self or admin routes
 router.get('/:id', authenticateToken, requireSelfOrAdmin(), getUserById);

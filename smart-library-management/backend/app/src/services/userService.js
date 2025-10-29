@@ -23,7 +23,6 @@ export const countTotalUsers = async () => {
 
 
 export const createUser = async (userData) => {
-  console.log('Creating user with data:', userData);
   const existingUser = await findUserByEmail(userData.email);
   if (existingUser) {
     return null;
@@ -90,6 +89,11 @@ export const findUsersByRole = async (role) => {
 
 export const getAllUsers = async () => {
   return await User.find({});
+};
+
+
+export const deleteUserById = async (id) => {
+  return await User.findByIdAndDelete(id);
 };
 
 

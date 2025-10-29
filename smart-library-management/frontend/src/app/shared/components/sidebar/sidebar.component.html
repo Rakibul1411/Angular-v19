@@ -1,99 +1,36 @@
-<aside class="w-80 bg-white shadow-sm flex flex-col h-screen">
-  <!-- Logo Section -->
-  <div class="p-6">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
-        <i class="pi pi-book text-white text-xl"></i>
-      </div>
-      <h1 class="text-xl font-bold text-gray-900">Library App</h1>
+<aside class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-full z-40 transform transition-transform duration-300"
+       [class]="isOpen() ? 'translate-x-0' : '-translate-x-full'">
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/50 md:hidden" (click)="closeSidebar.emit()"></div>
+
+  <!-- Sidebar Content -->
+  <nav class="relative w-72 h-full bg-white shadow-xl flex flex-col">
+
+    <!-- Menu Items -->
+    <div class="flex-1 py-4">
+      @for (item of menuItems(); track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-blue-500 text-white border-r-4 border-blue-600"
+          class="flex items-center gap-4 px-6 py-4 text-slate-700 hover:bg-gray-100 hover:text-blue-600 transition-all cursor-pointer border-none"
+          (click)="closeSidebar.emit()">
+          <i class="{{ item.icon }} w-5 text-center text-lg"></i>
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+      }
     </div>
-  </div>
 
-  <!-- Navigation Menu -->
-  <nav class="flex-1 px-4 overflow-y-auto">
-    @if (isAdmin()) {
-      <!-- Admin Menu -->
-      <div class="space-y-2">
-        <a routerLink="/admin/dashboard" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-th-large text-xl"></i>
-          <span class="font-medium">Dashboard</span>
-        </a>
-        <a routerLink="/admin/users" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-users text-xl"></i>
-          <span class="font-medium">Members</span>
-        </a>
-        <a routerLink="/admin/books" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-book text-xl"></i>
-          <span class="font-medium">Add Books</span>
-        </a>
-        <a routerLink="/admin/checkout" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-shopping-cart text-xl"></i>
-          <span class="font-medium">Check-out Books</span>
-        </a>
-        <a routerLink="/settings" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-cog text-xl"></i>
-          <span class="font-medium">Settings</span>
-        </a>
-        <a routerLink="/help" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-question-circle text-xl"></i>
-          <span class="font-medium">Help</span>
-        </a>
-      </div>
-    } @else {
-      <!-- Student Menu -->
-      <div class="space-y-2">
-        <a routerLink="/student/dashboard" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-th-large text-xl"></i>
-          <span class="font-medium">Dashboard</span>
-        </a>
-        <a routerLink="/profile" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-user text-xl"></i>
-          <span class="font-medium">My Info</span>
-        </a>
-        <a routerLink="/student/checkout" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-shopping-cart text-xl"></i>
-          <span class="font-medium">Check-out Books</span>
-        </a>
-        <a routerLink="/settings" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-cog text-xl"></i>
-          <span class="font-medium">Settings</span>
-        </a>
-        <a routerLink="/help" routerLinkActive="bg-green-100 text-green-800"
-           [routerLinkActiveOptions]="{exact: false}"
-           class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-all">
-          <i class="pi pi-question-circle text-xl"></i>
-          <span class="font-medium">Help</span>
-        </a>
-      </div>
-    }
+    <!-- Logout Button -->
+    <div class="p-4 border-t border-gray-200">
+      <p-button
+        label="Logout"
+        icon="fas fa-sign-out-alt"
+        severity="danger"
+        styleClass="w-full justify-center"
+        (onClick)="handleLogout()">
+      </p-button>
+    </div>
+
   </nav>
-
-  <!-- Logout Button -->
-  <div class="p-4 border-t border-gray-200">
-    <button (click)="logout()"
-       class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all">
-      <i class="pi pi-sign-out text-xl"></i>
-      <span class="font-medium">Logout</span>
-    </button>
-  </div>
 </aside>
