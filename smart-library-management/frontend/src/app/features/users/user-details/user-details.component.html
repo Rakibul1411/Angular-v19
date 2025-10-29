@@ -1,8 +1,8 @@
-<div class="min-h-screen bg-gray-100">
+<div class="p-6">
   <p-toast />
 
   <!-- Main Content -->
-  <main class="mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-6xl">
+  <div class="max-w-6xl">
     <!-- Action Buttons (when not editing) -->
     @if (!isLoading() && !isEditing() && user()) {
       <div class="mb-6 flex justify-end gap-3">
@@ -17,7 +17,7 @@
           <p-button
             label="Delete User"
             icon="pi pi-trash"
-            (onClick)="deleteUser()"
+            (onClick)="confirmDelete()"
             [outlined]="true"
             severity="danger"
           />
@@ -232,5 +232,5 @@
         </p-card>
       </div>
     </div>
-  </main>
+  </div>
 </div>

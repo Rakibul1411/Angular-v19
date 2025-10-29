@@ -1,189 +1,167 @@
-<div class="min-h-screen bg-gray-100">
+<div class="p-6">
   <p-toast />
   <p-confirmDialog />
 
-  <!-- Main Content -->
-  <div class="mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <p-card>
-      <!-- Filters and Search -->
-      <div class="mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-        <!-- Search -->
-        <div class="flex-1 max-w-md">
-          <span class="p-input-icon-left w-full">
-            <i class="pi pi-search"></i>
-            <input
-              pInputText
-              type="text"
-              placeholder="Search by name or email..."
-              class="w-full"
-              (input)="onSearchChange($event)"
-            />
-          </span>
-        </div>
-
+  <!-- Header Section -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Library Members</h1>
+        <p class="text-gray-600 text-sm">Manage and view all library members</p>
+      </div>
+      <div class="flex gap-3">
         <!-- Role Filter -->
-        <div class="flex gap-3 items-center">
-          <label class="text-sm font-semibold text-gray-700">Filter by Role:</label>
-          <p-select
-            [(ngModel)]="selectedRoleFilter"
-            [options]="roleFilterOptions"
-            (onChange)="onRoleFilterChange()"
-            styleClass="w-40"
+        <p-select
+          [(ngModel)]="selectedRoleFilter"
+          [options]="roleFilterOptions"
+          (onChange)="onRoleFilterChange()"
+          placeholder="All Members"
+          styleClass="w-40"
+        />
+        <!-- Search -->
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            placeholder="Search members..."
+            class="w-64"
+            (input)="onSearchChange($event)"
           />
-        </div>
+        </span>
       </div>
+    </div>
 
-      <!-- Statistics -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600 font-semibold">Total Users</p>
-              <p class="text-2xl font-bold text-blue-600">{{ users().length }}</p>
-            </div>
-            <i class="pi pi-users text-3xl text-blue-600 opacity-50"></i>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Total Members</p>
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{ users().length }}</p>
           </div>
-        </div>
-
-        <div class="bg-red-50 border-l-4 border-red-600 p-4 rounded">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600 font-semibold">Admins</p>
-              <p class="text-2xl font-bold text-red-600">{{ totalAdmins() }}</p>
-            </div>
-            <i class="pi pi-shield text-3xl text-red-600 opacity-50"></i>
-          </div>
-        </div>
-
-        <div class="bg-green-50 border-l-4 border-green-600 p-4 rounded">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-gray-600 font-semibold">Students</p>
-              <p class="text-2xl font-bold text-green-600">{{ totalStudents() }}</p>
-            </div>
-            <i class="pi pi-user text-3xl text-green-600 opacity-50"></i>
+          <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+            <i class="pi pi-users text-indigo-600 text-xl"></i>
           </div>
         </div>
       </div>
 
-      <!-- Users Table -->
-      <p-table
-        [value]="filteredUsers()"
-        [loading]="isLoading()"
-        [paginator]="true"
-        [rows]="10"
-        [rowsPerPageOptions]="[5, 10, 20, 50]"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
-        styleClass="p-datatable-striped"
-        [globalFilterFields]="['name', 'email', 'role']"
-      >
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 60px">#</th>
-            <th pSortableColumn="name">
-              Name <p-sortIcon field="name" />
-            </th>
-            <th pSortableColumn="email">
-              Email <p-sortIcon field="email" />
-            </th>
-            <th pSortableColumn="role">
-              Role <p-sortIcon field="role" />
-            </th>
-            <th pSortableColumn="createdAt">
-              Joined Date <p-sortIcon field="createdAt" />
-            </th>
-            <th style="width: 180px">Actions</th>
-          </tr>
-        </ng-template>
+      <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Administrators</p>
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{ totalAdmins() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+            <i class="pi pi-shield text-red-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
 
-        <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
-          <tr>
-            <!-- Avatar/Index -->
-            <td>
-              <div class="flex items-center justify-center">
-                <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold text-sm">
-                  {{ getUserInitials(user.name) }}
-                </div>
-              </div>
-            </td>
-
-            <!-- Name -->
-            <td>
-              <div class="flex flex-col">
-                <span class="font-semibold text-gray-800">{{ user.name }}</span>
-                @if ((user._id && user._id === currentUser()?.id) || (user.id && user.id === currentUser()?.id)) {
-                  <span class="text-xs text-blue-600">(You)</span>
-                }
-              </div>
-            </td>
-
-            <!-- Email -->
-            <td>
-              <span class="text-gray-700">{{ user.email }}</span>
-            </td>
-
-            <!-- Role -->
-            <td>
-              <p-tag
-                [value]="user.role.toUpperCase()"
-                [severity]="getRoleSeverity(user.role)"
-                [icon]="getRoleIcon(user.role)"
-              />
-            </td>
-
-            <!-- Joined Date -->
-            <td>
-              <span class="text-gray-600">{{ formatDate(user.createdAt) }}</span>
-            </td>
-
-            <!-- Actions -->
-            <td>
-              <div class="flex gap-2">
-                <p-button
-                  icon="pi pi-eye"
-                  [outlined]="true"
-                  size="small"
-                  severity="info"
-                  (onClick)="viewUserDetails(user)"
-                  pTooltip="View Details"
-                  tooltipPosition="top"
-                />
-                <p-button
-                  icon="pi pi-pencil"
-                  [outlined]="true"
-                  size="small"
-                  severity="warn"
-                  (onClick)="editUser(user)"
-                  pTooltip="Edit User"
-                  tooltipPosition="top"
-                />
-                <p-button
-                  icon="pi pi-trash"
-                  [outlined]="true"
-                  size="small"
-                  severity="danger"
-                  (onClick)="deleteUser(user)"
-                  pTooltip="Delete User"
-                  tooltipPosition="top"
-                  [disabled]="(user._id && user._id === currentUser()?.id) || (user.id && user.id === currentUser()?.id)"
-                />
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="6" class="text-center py-8">
-              <div class="flex flex-col items-center gap-3">
-                <i class="pi pi-users text-4xl text-gray-400"></i>
-                <p class="text-gray-600">No users found</p>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-card>
+      <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600 font-medium">Students</p>
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{ totalStudents() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <i class="pi pi-user text-green-600 text-xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Members Grid -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center py-20">
+      <i class="pi pi-spin pi-spinner text-4xl text-indigo-600"></i>
+    </div>
+  } @else if (filteredUsers().length === 0) {
+    <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
+      <i class="pi pi-users text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">No members found</h3>
+      <p class="text-gray-600">Try adjusting your search or filter criteria</p>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      @for (user of filteredUsers(); track user._id || user.id) {
+        <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-all cursor-pointer group"
+             (click)="viewUserDetails(user)">
+          <!-- User Avatar & Name -->
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+              {{ getUserInitials(user.name) }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+                {{ user.name }}
+              </h3>
+              <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
+            </div>
+          </div>
+
+          <!-- Role Badge -->
+          <div class="flex items-center gap-2 mb-3">
+            <p-tag
+              [value]="user.role === 'admin' ? 'Admin' : 'Student'"
+              [severity]="getRoleSeverity(user.role)"
+              [icon]="getRoleIcon(user.role)"
+              styleClass="text-xs"
+            />
+            @if ((user._id && user._id === currentUser()?.id) || (user.id && user.id === currentUser()?.id)) {
+              <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded">You</span>
+            }
+          </div>
+
+          <!-- Member Info -->
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2 text-gray-600">
+              <i class="pi pi-calendar text-xs"></i>
+              <span class="text-xs">Joined {{ formatDate(user.createdAt) }}</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+            <p-button
+              label="View"
+              icon="pi pi-eye"
+              size="small"
+              [outlined]="true"
+              severity="info"
+              styleClass="flex-1 text-xs"
+              (onClick)="viewUserDetails(user); $event.stopPropagation()"
+            />
+            <p-button
+              icon="pi pi-pencil"
+              size="small"
+              [outlined]="true"
+              severity="warn"
+              (onClick)="editUser(user); $event.stopPropagation()"
+              pTooltip="Edit"
+              tooltipPosition="top"
+            />
+            <p-button
+              icon="pi pi-trash"
+              size="small"
+              [outlined]="true"
+              severity="danger"
+              (onClick)="deleteUser(user); $event.stopPropagation()"
+              [disabled]="(user._id && user._id === currentUser()?.id) || (user.id && user.id === currentUser()?.id)"
+              pTooltip="Delete"
+              tooltipPosition="top"
+            />
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (filteredUsers().length > 12) {
+      <div class="mt-6 flex justify-center">
+        <p class="text-sm text-gray-600">Showing {{ filteredUsers().length }} members</p>
+      </div>
+    }
+  }
 </div>

@@ -1,16 +1,21 @@
-<div class="flex flex-col min-h-screen">
-  <!-- Static Header for all pages (except auth pages) -->
-  @if (showLayout()) {
-    <app-header />
-  }
+@if (isAuthPage()) {
+  <!-- Auth pages (login/register) without header/footer/sidebar -->
+  <router-outlet />
+} @else {
+  <!-- Main app layout with sidebar navigation -->
+  <div class="flex h-screen overflow-hidden bg-gray-50">
+    <!-- Sidebar Component -->
+    <app-sidebar />
 
-  <!-- Dynamic Content Area -->
-  <div class="flex-1">
-    <router-outlet />
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header Component -->
+      <app-header />
+
+      <!-- Page Content -->
+      <main class="flex-1 overflow-y-auto bg-gray-50">
+        <router-outlet />
+      </main>
+    </div>
   </div>
-
-  <!-- Static Footer for all pages (except auth pages) -->
-  @if (showLayout()) {
-    <app-footer />
-  }
-</div>
+}

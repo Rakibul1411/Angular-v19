@@ -193,6 +193,18 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  confirmDelete() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this user?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.deleteUser();
+      }
+    });
+  }
+
   deleteUser() {
     const user = this.user();
     if (!user) return;
@@ -210,33 +222,11 @@ export class UserDetailsComponent implements OnInit {
       return;
     }
 
-    this.confirmationService.confirm({
-      message: `Are you sure you want to delete user "${user.name}"? This action cannot be undone.`,
-      header: 'Delete Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        if (userId) {
-          this.userService.deleteUser(userId).subscribe({
-            next: () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'User deleted successfully'
-              });
-              // Navigate back to user list
-              this.router.navigate(['/admin/users']);
-            },
-            error: (error: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.message || 'Failed to delete user'
-              });
-            }
-          });
-        }
-      }
+    // Show not implemented message
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Not Implemented',
+      detail: 'Delete user functionality is not available in the backend API'
     });
   }
 

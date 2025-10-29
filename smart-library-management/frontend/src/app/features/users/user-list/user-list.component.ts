@@ -29,11 +29,9 @@ import { TooltipModule } from 'primeng/tooltip';
   imports: [
     CommonModule,
     FormsModule,
-    TableModule,
     ButtonModule,
     InputTextModule,
     TagModule,
-    CardModule,
     ToastModule,
     ConfirmDialogModule,
     SelectModule,
@@ -173,34 +171,12 @@ export class UserListComponent implements OnInit {
       return;
     }
 
-    this.confirmationService.confirm({
-      message: `Are you sure you want to delete user "${user.name}"? This action cannot be undone.`,
-      header: 'Delete Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        if (userId) {
-          this.performDelete(userId);
-        }
-      }
+    // Show not implemented message
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Not Implemented',
+      detail: 'Delete user functionality is not available in the backend API'
     });
-  }
-
-  /**
-   * Perform the actual delete operation
-   */
-  private performDelete(userId: string): void {
-    this.userService.deleteUser(userId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.showSuccess('User deleted successfully');
-          this.loadUsers();
-        },
-        error: (error) => {
-          this.showError('Failed to delete user', error.message);
-        }
-      });
   }
 
   /**
