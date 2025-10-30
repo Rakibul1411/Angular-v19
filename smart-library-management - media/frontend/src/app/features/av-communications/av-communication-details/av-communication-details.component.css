@@ -1,0 +1,121 @@
+/* Custom styles for AV Communication Details */
+
+/* Smooth transitions */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Video overlay hover effects */
+.group:hover .bg-opacity-20 {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Play button pulse animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.group:hover .w-20 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Badge styles */
+.inline-flex.items-center.gap-1\.5 {
+  font-weight: 500;
+}
+
+/* Breadcrumb styling */
+.pi-angle-right {
+  opacity: 0.5;
+}
+
+/* Modal backdrop blur effect */
+.fixed.inset-0.z-50 {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Video player styling */
+video {
+  max-height: 600px;
+  background: #000;
+  outline: none;
+  width: 100%;
+}
+
+video::-webkit-media-controls-panel {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+video::-webkit-media-controls {
+  opacity: 1 !important;
+}
+
+/* Play overlay pointer events */
+.absolute.inset-0 {
+  pointer-events: auto;
+}
+
+/* Ensure video controls are clickable */
+video {
+  position: relative;
+  z-index: 1;
+}
+
+/* Audio player styling */
+audio {
+  width: 100%;
+  outline: none;
+}
+
+audio::-webkit-media-controls-panel {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Grid layout for info cards */
+.grid.grid-cols-2 > div,
+.grid.grid-cols-4 > div {
+  transition: transform 0.2s ease;
+}
+
+/* Label styling */
+label {
+  letter-spacing: 0.025em;
+}
+
+/* Card shadow on hover */
+.bg-white.rounded-lg.border:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+

@@ -1,0 +1,82 @@
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 h-16 bg-white border-b-2 border-blue-200 shadow-lg">
+  <div class="flex items-center gap-4">
+    <!-- Hamburger Menu Button -->
+    <button
+      class="flex flex-col gap-1.5 p-2.5 rounded-xl hover:bg-blue-50 transition-all duration-200 group border border-transparent hover:border-blue-200"
+      (click)="toggleSidebar.emit()"
+      aria-label="Toggle sidebar">
+      <span class="block w-6 h-0.5 bg-blue-600 rounded-full group-hover:w-7 transition-all"></span>
+      <span class="block w-6 h-0.5 bg-blue-600 rounded-full transition-all"></span>
+      <span class="block w-6 h-0.5 bg-blue-600 rounded-full group-hover:w-7 transition-all"></span>
+    </button>
+
+    <!-- Logo & Title -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shadow-md border-2 border-blue-300">
+        <i class="pi pi-book text-blue-600 text-lg"></i>
+      </div>
+      <h1 class="text-xl md:text-2xl font-bold text-blue-900">
+        Smart Library
+      </h1>
+    </div>
+  </div>
+
+  <!-- User Profile Section -->
+  <div class="flex items-center gap-3 relative">
+    @if (currentUser()) {
+      <!-- Notification Bell -->
+      <button
+        class="relative p-2.5 rounded-xl hover:bg-blue-50 transition-all duration-200 group border border-transparent hover:border-blue-200"
+        aria-label="Notifications">
+        <i class="pi pi-bell text-blue-600 text-lg group-hover:scale-110 transition-transform"></i>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-white"></span>
+      </button>
+
+      <!-- User Profile with Dropdown -->
+      <div class="relative">
+        <button
+          (click)="toggleProfileMenu()"
+          class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-blue-50 transition-all duration-200 cursor-pointer group border border-transparent hover:border-blue-200">
+          <div class="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center font-bold text-sm text-purple-700 group-hover:scale-105 transition-transform border-2 border-purple-300">
+            {{ getUserInitials(currentUser()!.name) }}
+          </div>
+          <div class="hidden md:flex flex-col">
+            <span class="font-semibold text-gray-900 text-sm">{{ currentUser()!.name }}</span>
+            <span class="text-xs text-blue-600 font-medium">{{ currentUser()!.role }}</span>
+          </div>
+          <i class="pi pi-chevron-down text-blue-600 text-xs ml-1 transition-transform duration-200"
+             [class.rotate-180]="isProfileMenuOpen()"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        @if (isProfileMenuOpen()) {
+          <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border-2 border-blue-200 overflow-hidden animate-slideDown">
+            <div class="p-2">
+              <a
+                routerLink="/app/profile"
+                (click)="closeProfileMenu()"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 cursor-pointer group">
+                <i class="pi pi-user text-purple-600 w-5"></i>
+                <span class="font-semibold text-sm">My Profile</span>
+              </a>
+              <a
+                routerLink="/app/dashboard"
+                (click)="closeProfileMenu()"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 cursor-pointer group">
+                <i class="pi pi-home text-blue-600 w-5"></i>
+                <span class="font-semibold text-sm">Dashboard</span>
+              </a>
+              <div class="my-1 border-t-2 border-blue-200"></div>
+              <button
+                (click)="handleLogout()"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-200 cursor-pointer group">
+                <i class="pi pi-sign-out w-5"></i>
+                <span class="font-semibold text-sm">Logout</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</header>

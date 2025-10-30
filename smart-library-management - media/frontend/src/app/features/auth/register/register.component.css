@@ -1,0 +1,22 @@
+/* Minimal custom styles - using Tailwind classes in template */
+
+/* PrimeNG component width overrides */
+::ng-deep p-password {
+  width: 100%;
+}
+
+::ng-deep p-password .p-password {
+  width: 100%;
+}
+
+::ng-deep p-password .p-inputtext {
+  width: 100%;
+}
+
+::ng-deep p-select {
+  width: 100%;
+}
+
+::ng-deep p-select .p-select {
+  width: 100%;
+}

@@ -11,7 +11,8 @@ export const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ error: 'Invalid or expired access token' });
+      // Return 401 for expired/invalid tokens so frontend can refresh
+      return res.status(401).json({ error: 'Invalid or expired access token' });
     }
     req.user = user;
     next();

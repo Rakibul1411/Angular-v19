@@ -1,0 +1,198 @@
+<div class="max-w-7xl mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shadow-lg">
+          <i class="pi pi-book text-blue-600 text-xl"></i>
+        </div>
+        All Books
+      </h1>
+      <p class="text-gray-600 ml-15">Browse and manage the library collection</p>
+    </div>
+    <button
+      *ngIf="isAdmin()"
+      class="flex items-center gap-2 px-6 py-3 bg-green-100 hover:bg-green-200 text-green-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+      (click)="addNewBook()"
+      aria-label="Add new book">
+      <i class="pi pi-plus text-sm"></i>
+      Add New Book
+    </button>
+  </div>
+
+  <!-- Search Filter -->
+  <div class="mb-8 bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
+    <div class="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+      <div class="flex-1">
+        <div class="relative">
+          <i class="pi pi-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          <input
+            type="text"
+            placeholder="Search by title or author..."
+            class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="onSearchChange($event)"
+            aria-label="Search books by title or author"
+          />
+        </div>
+      </div>
+      @if (searchQuery()) {
+        <button
+          class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all flex items-center justify-center gap-2"
+          (click)="clearSearch()"
+          aria-label="Clear search">
+          <i class="pi pi-times text-sm"></i>
+          Clear
+        </button>
+      }
+      <div class="flex items-center gap-2 px-6 py-3 bg-blue-100 text-blue-700 font-semibold rounded-xl shadow-lg">
+        <i class="pi pi-book text-sm"></i>
+        <span>{{ filteredBooks().length }}</span>
+        <span class="hidden md:inline">books</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (errorMessage()) {
+    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+      <i class="pi pi-exclamation-triangle mr-2"></i>
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Books Grid -->
+  @if (!isLoading() && filteredBooks().length > 0) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (book of filteredBooks(); track book._id) {
+        <div
+          class="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1 cursor-pointer border-2 border-blue-200 overflow-hidden"
+          (click)="viewBookDetails(book._id!)">
+
+          <!-- Card Header -->
+          <div class="p-6 bg-blue-50 border-b-2 border-blue-200">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center border-2 border-blue-300">
+                <i class="pi pi-book text-blue-600 text-2xl"></i>
+              </div>
+              <div class="flex-1 text-blue-900">
+                <h3 class="text-lg font-bold line-clamp-2">{{ book.title }}</h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="p-6">
+            <!-- Book Info -->
+            <div class="mb-4 space-y-2">
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <i class="pi pi-user text-xs"></i>
+                <span class="font-medium">Author:</span>
+                <span>{{ book.author }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-sm text-gray-600">
+                <i class="pi pi-id-card text-xs"></i>
+                <span class="font-medium">ISBN:</span>
+                <span>{{ book.isbn }}</span>
+              </div>
+            </div>
+
+            <!-- Availability -->
+            <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-gray-700">Availability</span>
+                <span
+                  [class]="'text-sm font-bold ' + getAvailabilityClass(book.available_copies, book.copies)">
+                  {{ book.available_copies }} / {{ book.copies }}
+                </span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  class="bg-blue-600 h-2 rounded-full transition-all"
+                  [style.width.%]="(book.available_copies / book.copies) * 100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2">
+              <button
+                class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium rounded-lg transition-colors"
+                (click)="viewBookDetails(book._id!)">
+                <i class="pi pi-eye text-xs"></i>
+                View
+              </button>
+
+              @if (isAdmin()) {
+                <button
+                  class="flex items-center justify-center gap-2 px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 text-sm font-medium rounded-lg transition-colors"
+                  (click)="editBook($event, book._id!)">
+                  <i class="pi pi-pencil text-xs"></i>
+                  Edit
+                </button>
+
+                <button
+                  class="flex items-center justify-center gap-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 text-sm font-medium rounded-lg transition-colors"
+                  (click)="deleteBook($event, book)">
+                  <i class="pi pi-trash text-xs"></i>
+                  Delete
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && filteredBooks().length === 0 && books().length === 0) {
+    <div class="text-center py-12 bg-white rounded-lg shadow-md">
+      <i class="pi pi-book text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">No books found</h3>
+      <p class="text-gray-600 mb-4">There are no books in the library yet.</p>
+      @if (isAdmin()) {
+        <button
+          pButton
+          type="button"
+          label="Add First Book"
+          icon="pi pi-plus"
+          class="p-button-primary"
+          (click)="addNewBook()"
+          aria-label="Add first book">
+        </button>
+      }
+    </div>
+  }
+
+  <!-- No Search Results -->
+  @if (!isLoading() && filteredBooks().length === 0 && books().length > 0) {
+    <div class="text-center py-12 bg-white rounded-lg shadow-md">
+      <i class="pi pi-search text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">No books match your search</h3>
+      <p class="text-gray-600 mb-4">Try adjusting your search query to find what you're looking for.</p>
+      <button
+        pButton
+        type="button"
+        label="Clear Search"
+        icon="pi pi-times"
+        class="p-button-outlined"
+        (click)="clearSearch()"
+        aria-label="Clear search">
+      </button>
+    </div>
+  }
+</div>
+
+<!-- Toast Notifications -->
+<p-toast position="top-right" />
+
+<!-- Confirmation Dialog -->
+<p-confirmDialog />

@@ -1,0 +1,90 @@
+/* Custom styles for AV Communications List */
+
+/* Override PrimeNG table styles */
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: transparent !important;
+  border: none !important;
+  padding: 0.75rem 1rem !important;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  border: none !important;
+  padding: 1rem !important;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+  transition: background-color 0.2s ease;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #f9fafb !important;
+}
+
+/* Pagination styling */
+::ng-deep .p-paginator {
+  background: transparent !important;
+  border: none !important;
+  padding: 1rem !important;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  margin: 0 0.125rem;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: white !important;
+}
+
+::ng-deep .p-paginator .p-dropdown {
+  border-radius: 0.375rem;
+}
+
+/* Search input focus effect */
+input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Animation for success toast */
+@keyframes slideInUp {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.fixed.bottom-6 {
+  animation: slideInUp 0.3s ease-out;
+}
+
+/* Icon badge styling */
+.w-6.h-6.rounded-full {
+  transition: all 0.2s ease;
+}
+
+tr:hover .w-6.h-6.rounded-full {
+  transform: scale(1.1);
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}

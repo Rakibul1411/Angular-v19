@@ -1,0 +1,178 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+
+    @if (loading()) {
+      <div class="flex items-center justify-center py-20">
+        <i class="pi pi-spin pi-spinner text-6xl text-blue-600"></i>
+      </div>
+    } @else if (communication()) {
+
+      <!-- Header Section with Breadcrumb -->
+      <div class="bg-white border-b border-gray-200 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button
+              (click)="goBack()"
+              title="Go back to list"
+              aria-label="Go back to AV Communications list"
+              class="text-gray-500 hover:text-gray-700 transition-colors">
+              <i class="pi pi-arrow-left text-lg"></i>
+            </button>
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+              <span>All AVCommunication</span>
+              <i class="pi pi-angle-right text-xs"></i>
+              <span class="text-gray-900 font-medium">{{ communication()!.fileName }}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              (click)="editCommunication()"
+              class="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
+              <i class="pi pi-pencil text-sm"></i>
+              <span class="text-sm font-medium">Edit</span>
+            </button>
+            <button
+              (click)="deleteCommunication()"
+              class="flex items-center gap-2 px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+              <i class="pi pi-trash text-sm"></i>
+              <span class="text-sm font-medium">Delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="p-6">
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+
+          <!-- File Info Header -->
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">{{ communication()!.fileName }}</h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <!-- Campaign -->
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Campaign</label>
+                <div class="text-sm text-gray-900 font-medium">{{ communication()!.campaign }}</div>
+              </div>
+
+              <!-- Brand -->
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Brand</label>
+                <div class="text-sm text-gray-900 font-medium">{{ communication()!.brand }}</div>
+              </div>
+
+              <!-- Created By -->
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Created by</label>
+                <div class="text-sm text-gray-900 font-medium">{{ communication()!.createdByName || 'Anonymous' }}</div>
+              </div>
+
+              <!-- Created On -->
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Created on</label>
+                <div class="text-sm text-gray-900 font-medium">{{ formatDateShort(communication()!.createdAt) }}</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
+              <!-- File Type -->
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">File Type</label>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                  <i class="pi pi-file"></i>
+                  {{ communication()!.type }}
+                </div>
+              </div>
+
+              <!-- File Size -->
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">File Size</label>
+                <div class="text-sm text-gray-900 font-medium">{{ formatFileSize(communication()!.fileSize) }}</div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            @if (communication()!.description) {
+              <div class="mt-6">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                <div class="text-sm text-gray-700 leading-relaxed">{{ communication()!.description }}</div>
+              </div>
+            }
+          </div>
+
+          <!-- Media Preview Section -->
+          <div class="p-6 bg-gray-50">
+            @if (isVideo(communication()!.mimeType)) {
+              <!-- Video Preview with Play Overlay -->
+              <div class="relative group rounded-lg overflow-hidden">
+                <video
+                  #videoElement
+                  [src]="fileUrl()"
+                  controls
+                  class="w-full h-auto object-cover bg-black"
+                  (play)="isPlaying.set(true)"
+                  (pause)="isPlaying.set(false)"
+                  (ended)="isPlaying.set(false)">
+                  Your browser does not support the video tag.
+                </video>
+                @if (!isPlaying()) {
+                  <div
+                    class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all cursor-pointer"
+                    (click)="playMedia()">
+                    <div class="w-20 h-20 rounded-full bg-white bg-opacity-95 flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+                      <i class="pi pi-play text-4xl text-gray-800 ml-1"></i>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else if (isAudio(communication()!.mimeType)) {
+              <!-- Audio Placeholder -->
+              <div class="flex items-center justify-center p-20 bg-linear-to-br from-slate-50 to-slate-100 rounded-lg">
+                <div class="text-center">
+                  <div class="w-24 h-24 mx-auto mb-4 bg-linear-to-br from-slate-400 to-slate-600 rounded-full flex items-center justify-center shadow-lg">
+                    <i class="pi pi-volume-up text-4xl text-white"></i>
+                  </div>
+                  <p class="text-gray-600 font-medium mb-4">Audio File</p>
+                  <audio
+                    #audioElement
+                    [src]="fileUrl()"
+                    controls
+                    class="w-full max-w-md mx-auto">
+                    Your browser does not support the audio tag.
+                  </audio>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Additional Info Below Media -->
+          <div class="p-6 border-t border-gray-200 bg-white">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">MIME Type</label>
+                <div class="text-sm text-gray-900 font-medium">{{ communication()!.mimeType }}</div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                  <i class="pi pi-check-circle"></i>
+                  Active
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    }
+
+  </div>
+</div>
+
+<!-- Toast for notifications -->
+<p-toast position="top-right"></p-toast>
+
+<!-- Confirmation dialog -->
+<p-confirmDialog></p-confirmDialog>

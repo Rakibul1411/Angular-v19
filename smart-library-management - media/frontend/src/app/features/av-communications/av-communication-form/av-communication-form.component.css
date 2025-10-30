@@ -1,0 +1,140 @@
+/* Custom styles for AV Communication Form */
+
+/* Override PrimeNG dropdown styles */
+::ng-deep .custom-dropdown .p-dropdown {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+::ng-deep .custom-dropdown .p-dropdown:hover {
+  border-color: #9ca3af;
+}
+
+::ng-deep .custom-dropdown .p-dropdown:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+::ng-deep .custom-dropdown .p-dropdown-label {
+  padding: 0;
+  color: #374151;
+}
+
+::ng-deep .custom-dropdown .p-dropdown-label.p-placeholder {
+  color: #9ca3af;
+}
+
+::ng-deep .custom-dropdown .p-dropdown-trigger {
+  width: 2rem;
+}
+
+/* File upload area animations */
+.border-dashed:hover {
+  border-color: #3b82f6 !important;
+  background-color: #eff6ff !important;
+}
+
+/* Textarea focus */
+textarea:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Rich text editor toolbar buttons */
+.border-gray-300 button:hover {
+  background-color: #f3f4f6;
+}
+
+.border-gray-300 button:active {
+  background-color: #e5e7eb;
+}
+
+/* Select dropdowns in toolbar */
+select {
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Button transitions */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* File preview video player */
+video {
+  outline: none;
+}
+
+video::-webkit-media-controls-panel {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Smooth transitions for form elements */
+input,
+select,
+textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Custom scrollbar for textarea */
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pi-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Form validation styles */
+.text-red-500 {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

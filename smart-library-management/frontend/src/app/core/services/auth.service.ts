@@ -69,7 +69,10 @@ export class AuthService {
 
   refreshToken(): Observable<RefreshTokenResponse> {
     const refreshToken = this.storage.getRefreshToken();
+    console.log('🔑 Attempting to refresh token...', { hasRefreshToken: !!refreshToken });
+
     if (!refreshToken) {
+      console.error('❌ No refresh token available');
       return throwError(() => new Error('No refresh token available'));
     }
 
@@ -78,13 +81,22 @@ export class AuthService {
     return this.http.post<RefreshTokenResponse>(`${this.apiUrl}/refresh`, request)
       .pipe(
         tap(response => {
+          console.log('✅ Token refresh successful', {
+            hasAccessToken: !!response.accessToken,
+            hasRefreshToken: !!response.refreshToken,
+            user: response.user?.email
+          });
           this.storage.setAccessToken(response.accessToken);
           this.storage.setRefreshToken(response.refreshToken);
           this.storage.setUserData(response.user);
           this.currentUserSignal.set(response.user);
         }),
         catchError(error => {
-          this.logout();
+          console.error('❌ Token refresh error:', {
+            status: error.status,
+            message: error.error?.error || error.message
+          });
+          // Don't logout here, let the interceptor handle it
           return throwError(() => error);
         })
       );
@@ -114,6 +126,12 @@ export class AuthService {
   }
 
   private clearSession(): void {
+    this.storage.clearAll();
+    this.currentUserSignal.set(null);
+    this.router.navigate(['/login']);
+  }
+
+  clearSessionAndRedirect(): void {
     this.storage.clearAll();
     this.currentUserSignal.set(null);
     this.router.navigate(['/login']);

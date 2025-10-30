@@ -1,0 +1,260 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="max-w-4xl mx-auto p-6">
+
+    @if (loading()) {
+      <div class="flex items-center justify-center py-20">
+        <i class="pi pi-spin pi-spinner text-6xl text-blue-600"></i>
+      </div>
+    } @else {
+
+      <!-- Header with Breadcrumb -->
+      <div class="mb-6">
+        <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+          <span class="cursor-pointer hover:text-blue-600 transition-colors" (click)="goBack()">
+            AV/Communication
+          </span>
+          <i class="pi pi-angle-right text-xs"></i>
+          <span class="text-gray-900">{{ isEditMode() ? 'Edit' : 'Create New' }}</span>
+        </div>
+        <h1 class="text-2xl font-semibold text-gray-900">
+          {{ isEditMode() ? 'Edit' : 'Create New' }}
+        </h1>
+      </div>
+
+      <!-- Form Card -->
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+
+        <form [formGroup]="communicationForm" (ngSubmit)="onSubmit()">
+
+          <div class="p-6">
+            <!-- Campaign and Brand Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+              <!-- Campaign Field -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Campaign <span class="text-red-500">*</span>
+                </label>
+                <p-dropdown
+                  formControlName="campaign"
+                  [options]="campaigns()"
+                  optionLabel="name"
+                  optionValue="name"
+                  placeholder="Project Toofan 2025"
+                  [style]="{'width': '100%'}"
+                  [showClear]="true"
+                  appendTo="body"
+                  styleClass="w-full custom-dropdown">
+                </p-dropdown>
+                @if (communicationForm.get('campaign')?.invalid && communicationForm.get('campaign')?.touched) {
+                  <small class="text-red-500 text-xs mt-1 block">Campaign is required</small>
+                }
+              </div>
+
+              <!-- Brand Field -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Brand <span class="text-red-500">*</span>
+                </label>
+                <p-dropdown
+                  formControlName="brand"
+                  [options]="brands()"
+                  optionLabel="name"
+                  optionValue="name"
+                  placeholder="Sheikh"
+                  [style]="{'width': '100%'}"
+                  [showClear]="true"
+                  appendTo="body"
+                  styleClass="w-full custom-dropdown">
+                </p-dropdown>
+                @if (communicationForm.get('brand')?.invalid && communicationForm.get('brand')?.touched) {
+                  <small class="text-red-500 text-xs mt-1 block">Brand is required</small>
+                }
+              </div>
+            </div>
+
+            <!-- File Upload Field -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Upload File @if (!isEditMode()) {<span class="text-red-500">*</span>}
+              </label>
+              <p class="text-xs text-gray-500 mb-3">
+                Image file should not be larger than 1 MB and video file should not be larger than 30 MB
+              </p>
+
+              @if (!selectedFile() && !filePreview()) {
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer bg-gray-50">
+                  <label class="cursor-pointer block">
+                    <input
+                      type="file"
+                      class="hidden"
+                      accept="video/*,audio/*"
+                      (change)="onFileSelectNative($event)"
+                      #fileInput>
+                    <i class="pi pi-cloud-upload text-4xl text-gray-400 mb-3 block"></i>
+                    <p class="text-gray-600 font-medium mb-1">Drag & drop files or <span class="text-blue-600">Browse</span></p>
+                    <p class="text-xs text-gray-400">Supported formats: Video, Audio</p>
+                  </label>
+                </div>
+              } @else {
+                <div class="border border-gray-200 rounded-lg p-4 bg-white">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3 flex-1">
+                      <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+                        <i class="pi pi-file text-blue-600"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-900 text-sm truncate">
+                          {{ selectedFile()?.name || 'Current file' }}
+                        </p>
+                        @if (selectedFile()) {
+                          <p class="text-xs text-gray-500">{{ formatFileSize(selectedFile()!.size) }}</p>
+                        }
+                      </div>
+                      @if (selectedFile()) {
+                        <div class="flex items-center gap-2">
+                          <i class="pi pi-check-circle text-green-500"></i>
+                          <button
+                            type="button"
+                            (click)="removeFile()"
+                            class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                            Re-upload
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- File Preview -->
+                  @if (filePreview() && selectedFile()) {
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                      @if (selectedFile()!.type.startsWith('video/')) {
+                        <video [src]="filePreview()!" controls class="w-full rounded-lg max-h-60 bg-black"></video>
+                      } @else if (selectedFile()!.type.startsWith('audio/')) {
+                        <audio [src]="filePreview()!" controls class="w-full"></audio>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (communicationForm.get('file')?.invalid && communicationForm.get('file')?.touched) {
+                <small class="text-red-500 text-xs mt-1 block">File is required</small>
+              }
+            </div>
+
+            <!-- Description Field -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Description
+              </label>
+
+              <!-- Rich Text Editor Toolbar -->
+              <div class="border border-gray-300 rounded-t-lg bg-white">
+                <div class="p-2 flex items-center gap-1 flex-wrap border-b border-gray-200">
+                  <select
+                    title="Font family"
+                    class="text-xs border border-gray-300 rounded px-2 py-1 text-gray-700 bg-white">
+                    <option>Milky</option>
+                  </select>
+                  <select
+                    title="Font size"
+                    class="text-xs border border-gray-300 rounded px-2 py-1 text-gray-700 bg-white ml-1">
+                    <option>12</option>
+                  </select>
+
+                  <div class="border-l border-gray-300 h-5 mx-2"></div>
+
+                  <button
+                    type="button"
+                    title="Bold"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <i class="pi pi-bold text-xs"></i>
+                  </button>
+                  <button
+                    type="button"
+                    title="Italic"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <i class="pi pi-italic text-xs"></i>
+                  </button>
+                  <button
+                    type="button"
+                    title="Underline"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <i class="pi pi-underline text-xs"></i>
+                  </button>
+
+                  <div class="border-l border-gray-300 h-5 mx-2"></div>
+
+                  <button
+                    type="button"
+                    title="Text Color"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <i class="pi pi-palette text-xs"></i>
+                  </button>
+                  <button
+                    type="button"
+                    title="Link"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <i class="pi pi-link text-xs"></i>
+                  </button>
+
+                  <div class="border-l border-gray-300 h-5 mx-2"></div>
+
+                  <button
+                    type="button"
+                    title="Ordered List"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <i class="pi pi-list text-xs"></i>
+                  </button>
+                  <button
+                    type="button"
+                    title="More Options"
+                    class="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded text-gray-600 transition-colors">
+                    <span class="text-xs font-bold">...</span>
+                  </button>
+                </div>
+
+                <textarea
+                  pInputTextarea
+                  formControlName="description"
+                  rows="5"
+                  placeholder="POSM Placement Guideline"
+                  class="w-full border-0 rounded-b-lg p-3 focus:outline-none focus:ring-0 resize-none text-sm text-gray-700">
+                </textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Action Buttons -->
+          <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-lg">
+            <div class="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                (click)="goBack()"
+                class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                [disabled]="submitting() || communicationForm.invalid"
+                class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                @if (submitting()) {
+                  <i class="pi pi-spin pi-spinner text-sm"></i>
+                }
+                <span>{{ isEditMode() ? 'Update Communication' : 'Create Communication' }}</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+
+    }
+
+  </div>
+</div>
+
+<!-- Toast for notifications -->
+<p-toast position="top-right"></p-toast>
