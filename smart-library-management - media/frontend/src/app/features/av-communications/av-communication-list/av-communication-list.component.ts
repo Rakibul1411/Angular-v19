@@ -43,6 +43,7 @@ export class AVCommunicationListComponent implements OnInit {
 
   // Signals
   avCommunications = signal<AVCommunication[]>([]);
+  filteredCommunications = signal<AVCommunication[]>([]);
   loading = signal<boolean>(false);
   totalRecords = signal<number>(0);
   currentUser = this.authService.currentUser;
@@ -55,6 +56,10 @@ export class AVCommunicationListComponent implements OnInit {
   rowsPerPageOptions = [10, 25, 50];
   searchQuery = signal<string>('');
   showSuccessToast = signal<boolean>(false);
+
+  // Sorting
+  sortField = signal<string>('');
+  sortOrder = signal<number>(1); // 1 for ascending, -1 for descending
 
   ngOnInit(): void {
     this.loadAVCommunications();
@@ -71,7 +76,8 @@ export class AVCommunicationListComponent implements OnInit {
     this.avService.getAllAVCommunications(filter).subscribe({
       next: (response) => {
         this.avCommunications.set(response.data);
-        this.totalRecords.set(response.pagination?.total || response.data.length);
+        this.applyFiltersAndSort();
+        this.totalRecords.set(this.filteredCommunications().length);
         this.loading.set(false);
       },
       error: (error) => {
@@ -154,9 +160,69 @@ export class AVCommunicationListComponent implements OnInit {
     });
   }
 
+  applyFiltersAndSort(): void {
+    let filtered = [...this.avCommunications()];
+
+    // Apply search filter
+    const query = this.searchQuery().toLowerCase().trim();
+    if (query) {
+      filtered = filtered.filter(av =>
+        av.fileName.toLowerCase().includes(query) ||
+        av.type.toLowerCase().includes(query) ||
+        av.campaign.toLowerCase().includes(query) ||
+        av.brand.toLowerCase().includes(query) ||
+        av.createdByName?.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply sorting
+    if (this.sortField()) {
+      filtered.sort((a, b) => {
+        const field = this.sortField();
+        let aVal: any = a[field as keyof AVCommunication];
+        let bVal: any = b[field as keyof AVCommunication];
+
+        // Handle null/undefined
+        if (aVal == null && bVal == null) return 0;
+        if (aVal == null) return this.sortOrder();
+        if (bVal == null) return -this.sortOrder();
+
+        // Convert to strings for comparison
+        aVal = String(aVal).toLowerCase();
+        bVal = String(bVal).toLowerCase();
+
+        if (aVal < bVal) return -this.sortOrder();
+        if (aVal > bVal) return this.sortOrder();
+        return 0;
+      });
+    }
+
+    this.filteredCommunications.set(filtered);
+  }
+
   onSearch(): void {
-    // Implement search functionality
-    this.loadAVCommunications();
+    this.first.set(0); // Reset to first page
+    this.applyFiltersAndSort();
+    this.totalRecords.set(this.filteredCommunications().length);
+  }
+
+  onSort(field: string): void {
+    if (this.sortField() === field) {
+      // Toggle sort order
+      this.sortOrder.set(this.sortOrder() * -1);
+    } else {
+      // New field, set ascending
+      this.sortField.set(field);
+      this.sortOrder.set(1);
+    }
+    this.applyFiltersAndSort();
+  }
+
+  getSortIcon(field: string): string {
+    if (this.sortField() !== field) {
+      return 'pi pi-sort-alt';
+    }
+    return this.sortOrder() === 1 ? 'pi pi-sort-amount-up-alt' : 'pi pi-sort-amount-down';
   }
 
   exportData(): void {

@@ -46,7 +46,7 @@ export const createCommunication = async (file, body) => {
     fileName: file.originalname,
     filePath: `/uploads/av-communications/${file.filename}`,
     description: body.description ?? '',
-    type: 'AV',
+    type: body.type || 'AV',
     mimeType: file.mimetype,
     fileSize: file.size,
     campaign: refs.campaign,
@@ -91,6 +91,10 @@ export const updateCommunicationById = async (id, body, file) => {
 
   if (body.description !== undefined) {
     comm.description = body.description;
+  }
+
+  if (body.type !== undefined) {
+    comm.type = body.type;
   }
 
   if (body.campaign || body.brand) {

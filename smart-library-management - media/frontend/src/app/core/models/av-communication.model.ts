@@ -14,6 +14,7 @@ export interface AVCommunication {
 }
 
 export interface CreateAVCommunicationDto {
+  type: string;
   campaign: string;
   brand: string;
   description?: string;
@@ -21,6 +22,7 @@ export interface CreateAVCommunicationDto {
 }
 
 export interface UpdateAVCommunicationDto {
+  type?: string;
   campaign?: string;
   brand?: string;
   description?: string;

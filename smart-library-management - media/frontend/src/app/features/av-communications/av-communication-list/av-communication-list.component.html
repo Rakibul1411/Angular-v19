@@ -45,14 +45,12 @@
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
 
       <p-table
-        [value]="avCommunications()"
+        [value]="filteredCommunications()"
         [loading]="loading()"
         [paginator]="true"
         [rows]="rows()"
         [totalRecords]="totalRecords()"
         [rowsPerPageOptions]="rowsPerPageOptions"
-        [lazy]="true"
-        (onLazyLoad)="onPageChange($event)"
         [first]="first()"
         [tableStyle]="{'min-width': '60rem'}">
 
@@ -67,42 +65,42 @@
               <div class="flex items-center gap-2">
                 <i class="pi pi-file text-xs"></i>
                 <span>File</span>
-                <i class="pi pi-sort-alt text-xs cursor-pointer"></i>
+                <i [class]="getSortIcon('fileName')" (click)="onSort('fileName')" class="text-xs cursor-pointer hover:text-blue-600"></i>
               </div>
             </th>
             <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <i class="pi pi-tag text-xs"></i>
                 <span>Type</span>
-                <i class="pi pi-sort-alt text-xs cursor-pointer"></i>
+                <i [class]="getSortIcon('type')" (click)="onSort('type')" class="text-xs cursor-pointer hover:text-blue-600"></i>
               </div>
             </th>
             <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <i class="pi pi-megaphone text-xs"></i>
                 <span>Campaign</span>
-                <i class="pi pi-sort-alt text-xs cursor-pointer"></i>
+                <i [class]="getSortIcon('campaign')" (click)="onSort('campaign')" class="text-xs cursor-pointer hover:text-blue-600"></i>
               </div>
             </th>
             <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <i class="pi pi-bookmark text-xs"></i>
                 <span>Brand</span>
-                <i class="pi pi-sort-alt text-xs cursor-pointer"></i>
+                <i [class]="getSortIcon('brand')" (click)="onSort('brand')" class="text-xs cursor-pointer hover:text-blue-600"></i>
               </div>
             </th>
             <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <i class="pi pi-user text-xs"></i>
                 <span>Created By</span>
-                <i class="pi pi-sort-alt text-xs cursor-pointer"></i>
+                <i [class]="getSortIcon('createdByName')" (click)="onSort('createdByName')" class="text-xs cursor-pointer hover:text-blue-600"></i>
               </div>
             </th>
             <th class="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <i class="pi pi-calendar text-xs"></i>
                 <span>Created At</span>
-                <i class="pi pi-sort-alt text-xs cursor-pointer"></i>
+                <i [class]="getSortIcon('createdAt')" (click)="onSort('createdAt')" class="text-xs cursor-pointer hover:text-blue-600"></i>
               </div>
             </th>
             <th class="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
@@ -112,7 +110,7 @@
         <ng-template pTemplate="body" let-av let-rowIndex="rowIndex">
           <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
             <td class="py-4 px-4 text-sm text-gray-600">
-              {{ first() + rowIndex + 1 }}
+              {{ rowIndex + 1 }}
             </td>
 
             <td class="py-4 px-4">

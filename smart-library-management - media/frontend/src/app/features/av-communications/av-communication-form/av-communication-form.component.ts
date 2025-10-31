@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -44,6 +44,8 @@ export class AVCommunicationFormComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
 
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
+
   communicationForm!: FormGroup;
   isEditMode = signal<boolean>(false);
   loading = signal<boolean>(false);
@@ -54,22 +56,33 @@ export class AVCommunicationFormComponent implements OnInit {
   brands = signal<Brand[]>([]);
   selectedFile = signal<File | null>(null);
   filePreview = signal<string | null>(null);
+  currentFileName = signal<string | null>(null);
+
+  // Communication types
+  communicationTypes = [
+    { label: 'AV', value: 'AV' },
+    { label: 'Communication', value: 'Communication' }
+  ];
 
   ngOnInit(): void {
-    this.initializeForm();
-    this.loadCampaigns();
-    this.loadBrands();
-
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
       this.communicationId.set(id);
+    }
+
+    this.initializeForm();
+    this.loadCampaigns();
+    this.loadBrands();
+
+    if (id) {
       this.loadCommunicationData(id);
     }
   }
 
   initializeForm(): void {
     this.communicationForm = this.fb.group({
+      type: ['', Validators.required],
       campaign: ['', Validators.required],
       brand: ['', Validators.required],
       description: [''],
@@ -113,11 +126,13 @@ export class AVCommunicationFormComponent implements OnInit {
       next: (response) => {
         const data = response.data;
         this.communicationForm.patchValue({
+          type: data.type || 'AV',
           campaign: data.campaign,
           brand: data.brand,
           description: data.description
         });
         this.filePreview.set(this.avService.getFileUrl(data.filePath));
+        this.currentFileName.set(data.fileName);
         this.loading.set(false);
       },
       error: (error) => {
@@ -186,7 +201,13 @@ export class AVCommunicationFormComponent implements OnInit {
   removeFile(): void {
     this.selectedFile.set(null);
     this.filePreview.set(null);
+    this.currentFileName.set(null);
     this.communicationForm.patchValue({ file: null });
+  }
+
+  triggerFileUpload(): void {
+    this.removeFile();
+    this.fileInput?.nativeElement.click();
   }
 
   formatFileSize(bytes: number): string {
@@ -213,6 +234,7 @@ export class AVCommunicationFormComponent implements OnInit {
     if (this.isEditMode() && this.communicationId()) {
       // Update existing communication
       const updateData = {
+        type: formData.type,
         campaign: formData.campaign,
         brand: formData.brand,
         description: formData.description,
@@ -241,6 +263,7 @@ export class AVCommunicationFormComponent implements OnInit {
     } else {
       // Create new communication
       const createData = {
+        type: formData.type,
         campaign: formData.campaign,
         brand: formData.brand,
         description: formData.description,

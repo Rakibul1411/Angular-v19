@@ -52,6 +52,9 @@ export class AVCommunicationService {
    */
   createAVCommunication(data: CreateAVCommunicationDto): Observable<AVCommunicationResponse> {
     const formData = new FormData();
+    if (data.type) {
+      formData.append('type', data.type);
+    }
     formData.append('campaign', data.campaign);
     formData.append('brand', data.brand);
     if (data.description) {
@@ -70,6 +73,7 @@ export class AVCommunicationService {
   updateAVCommunication(id: string, data: UpdateAVCommunicationDto): Observable<AVCommunicationResponse> {
     const formData = new FormData();
 
+    if (data.type) formData.append('type', data.type);
     if (data.campaign) formData.append('campaign', data.campaign);
     if (data.brand) formData.append('brand', data.brand);
     if (data.description !== undefined) formData.append('description', data.description);
