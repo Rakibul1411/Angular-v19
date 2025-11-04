@@ -21,3 +21,7 @@ yarn-error.log*
 .idea/
 uploads/
 /uploads/*
+
+node_modules/
+dist/
+build/
