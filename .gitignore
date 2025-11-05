@@ -1,2 +1,34 @@
+# Jupyter/JSON files
 Region-Area-Territory-Salespoint.json
 Region-Area-Territory-Salespoint.ipynb
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+.angular/
+**/.angular/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

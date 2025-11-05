@@ -1,0 +1,143 @@
+<div class="reconciliation-container">
+  <!-- Year Selection -->
+  <div class="year-selection">
+    <label>Choose Year</label>
+    <div class="year-inputs">
+      <div class="year-input-group">
+        <label>From</label>
+        <input type="number" [(ngModel)]="yearFrom" readonly />
+      </div>
+      <div class="year-input-group">
+        <label>To</label>
+        <input type="number" [(ngModel)]="yearTo" readonly />
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Table -->
+  <table class="reconciliation-table">
+    <!-- Year Header -->
+    <thead>
+      <tr class="year-header">
+        <th colspan="14">Year {{ yearFrom }}</th>
+      </tr>
+
+      <!-- Month Headers -->
+      <tr class="month-header">
+        <th colspan="2"></th>
+        <th *ngFor="let month of months">{{ month }}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- Income Row -->
+      <tr class="data-row">
+        <td class="row-label" rowspan="4"></td>
+        <td class="row-label">Income</td>
+        <td *ngFor="let data of monthlyData">{{ data.income }}</td>
+      </tr>
+
+      <!-- Cumulative Income Row -->
+      <tr class="data-row">
+        <td class="row-label">Cumulative Income</td>
+        <td *ngFor="let data of monthlyData">{{ data.cumulativeIncome }}</td>
+      </tr>
+
+      <!-- Cost Row -->
+      <tr class="data-row">
+        <td class="row-label">Cost</td>
+        <td *ngFor="let data of monthlyData">{{ data.cost }}</td>
+      </tr>
+
+      <!-- Cumulative Cost Row -->
+      <tr class="data-row">
+        <td class="row-label">Cumulative Cost</td>
+        <td *ngFor="let data of monthlyData">{{ data.cumulativeCost }}</td>
+      </tr>
+
+      <!-- Result Row -->
+      <tr class="result-row">
+        <td colspan="2" class="row-label bold">Result</td>
+        <td *ngFor="let data of monthlyData" class="bold">{{ data.result }}</td>
+      </tr>
+
+      <!-- Reconciliation Header -->
+      <tr class="reconciliation-header">
+        <th colspan="14">Reconciliation</th>
+      </tr>
+
+      <!-- Income Types -->
+      <tr class="section-header">
+        <td class="row-label bold" [attr.rowspan]="incomeTypes.length">Income</td>
+        <td class="row-label type-label">{{ incomeTypes[0] }}</td>
+        <td *ngFor="let month of months; let i = index">
+          <input
+            type="number"
+            [(ngModel)]="incomeReconciliation[incomeTypes[0]][i]"
+            (ngModelChange)="onReconciliationChange()"
+            class="input-field"
+          />
+        </td>
+      </tr>
+      <tr class="section-row" *ngFor="let type of incomeTypes.slice(1)">
+        <td class="row-label type-label">{{ type }}</td>
+        <td *ngFor="let month of months; let i = index">
+          <input
+            type="number"
+            [(ngModel)]="incomeReconciliation[type][i]"
+            (ngModelChange)="onReconciliationChange()"
+            class="input-field"
+          />
+        </td>
+      </tr>
+
+      <!-- Expense Types -->
+      <tr class="section-header">
+        <td class="row-label bold" [attr.rowspan]="expenseTypes.length">Expense</td>
+        <td class="row-label type-label">{{ expenseTypes[0] }}</td>
+        <td *ngFor="let month of months; let i = index">
+          <input
+            type="number"
+            [(ngModel)]="expenseReconciliation[expenseTypes[0]][i]"
+            (ngModelChange)="onReconciliationChange()"
+            class="input-field"
+          />
+        </td>
+      </tr>
+      <tr class="section-row" *ngFor="let type of expenseTypes.slice(1)">
+        <td class="row-label type-label">{{ type }}</td>
+        <td *ngFor="let month of months; let i = index">
+          <input
+            type="number"
+            [(ngModel)]="expenseReconciliation[type][i]"
+            (ngModelChange)="onReconciliationChange()"
+            class="input-field"
+          />
+        </td>
+      </tr>
+
+      <!-- Reconciliation Result Row -->
+      <tr class="reconciliation-result-row">
+        <td colspan="2" class="row-label bold">Reconciliation Result</td>
+        <td *ngFor="let result of reconciliationResult" class="bold">{{ result }}</td>
+      </tr>
+
+      <!-- Final Result Row -->
+      <tr class="final-result-row">
+        <td colspan="2" class="row-label bold">Final Result</td>
+        <td *ngFor="let result of finalResult" class="bold">{{ result }}</td>
+      </tr>
+
+      <!-- Cumulative Final Result Row -->
+      <tr class="cumulative-result-row">
+        <td colspan="2" class="row-label bold">Cumulative Final Result</td>
+        <td *ngFor="let result of cumulativeFinalResult" class="bold">{{ result }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Submit Button -->
+  <div class="submit-container">
+    <button class="submit-btn" (click)="onSubmit()">Submit</button>
+  </div>
+</div>
