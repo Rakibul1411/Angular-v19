@@ -1,0 +1,16 @@
+/* Allow multiselect chips to wrap to multiple lines */
+::ng-deep .p-multiselect-label-container {
+  flex-wrap: wrap !important;
+}
+
+::ng-deep .p-multiselect .p-multiselect-label {
+  white-space: normal !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.25rem !important;
+  padding: 0.5rem !important;
+}
+
+::ng-deep .p-multiselect-chip {
+  margin: 0.125rem !important;
+}

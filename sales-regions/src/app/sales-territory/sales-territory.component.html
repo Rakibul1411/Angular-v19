@@ -1,0 +1,108 @@
+<div class="max-w-2xl mx-auto my-8 px-4">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="px-6 py-4 border-b">
+        <h2 class="text-2xl font-semibold text-gray-800">Consumer Survey Summary</h2>
+      </div>
+    </ng-template>
+
+    <!-- Select Regions -->
+    <div class="mb-6">
+      <label for="region" class="block mb-2 text-sm font-normal text-gray-600">Select Regions</label>
+      <p-multiselect
+        id="region"
+        [options]="regionOptions"
+        [(ngModel)]="selectedRegionIds"
+        (onChange)="onRegionChange()"
+        placeholder="Select regions"
+        optionLabel="label"
+        optionValue="value"
+        [showToggleAll]="true"
+        [filter]="true"
+        filterPlaceholder="Search regions"
+        [maxSelectedLabels]="100"
+        styleClass="w-full"
+        [loading]="loadingRegions"
+        display="chip">
+      </p-multiselect>
+    </div>
+
+    <!-- Select Areas -->
+    <div class="mb-6">
+      <label for="areas" class="block mb-2 text-sm font-normal text-gray-600">Select Areas</label>
+      <p-multiselect
+        id="areas"
+        [options]="areaOptions"
+        [(ngModel)]="selectedAreaIds"
+        (onChange)="onAreaChange()"
+        placeholder="Select areas"
+        optionLabel="label"
+        optionValue="value"
+        [showToggleAll]="true"
+        [filter]="true"
+        filterPlaceholder="Search areas"
+        [maxSelectedLabels]="100"
+        [disabled]="!selectedRegionIds || selectedRegionIds.length === 0"
+        styleClass="w-full"
+        [loading]="loadingAreas"
+        display="chip">
+        <ng-template pTemplate="header">
+          <div class="p-2">
+            <label class="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded">
+              <input
+                type="checkbox"
+                class="mr-2"
+                [checked]="selectedAreaIds.length === areaOptions.length && areaOptions.length > 0"
+                (change)="toggleAllAreas($event)">
+              <span class="text-sm font-medium text-pink-600">Select All</span>
+            </label>
+          </div>
+        </ng-template>
+      </p-multiselect>
+    </div>
+
+    <!-- Select Territories -->
+    <div class="mb-6">
+      <label for="territories" class="block mb-2 text-sm font-normal text-gray-600">Select Territories</label>
+      <p-multiselect
+        id="territories"
+        [options]="territoryOptions"
+        [(ngModel)]="selectedTerritoryIds"
+        (onChange)="onTerritoryChange()"
+        placeholder="Select territories"
+        optionLabel="label"
+        optionValue="value"
+        [showToggleAll]="true"
+        [filter]="true"
+        filterPlaceholder="Search territories"
+        [maxSelectedLabels]="150"
+        [disabled]="!selectedAreaIds || selectedAreaIds.length === 0"
+        styleClass="w-full"
+        [loading]="loadingTerritories"
+        display="chip">
+      </p-multiselect>
+    </div>
+
+    <!-- Select SalesPoints -->
+    <div class="mb-4">
+      <label for="salespoints" class="block mb-2 text-sm font-normal text-gray-600">Select SalesPoints</label>
+      <p-multiselect
+        id="salespoints"
+        [options]="salesPointOptions"
+        [(ngModel)]="selectedSalesPointIds"
+        (onChange)="onSalesPointChange()"
+        placeholder="Select sales points"
+        optionLabel="label"
+        optionValue="value"
+        [showToggleAll]="true"
+        [filter]="true"
+        filterPlaceholder="Search sales points"
+        [maxSelectedLabels]="300"
+        [disabled]="!selectedTerritoryIds || selectedTerritoryIds.length === 0"
+        styleClass="w-full"
+        [loading]="loadingSalesPoints"
+        display="chip">
+      </p-multiselect>
+    </div>
+  </p-card>
+</div>
